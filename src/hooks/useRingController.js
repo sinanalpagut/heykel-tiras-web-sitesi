@@ -66,16 +66,24 @@ export default function useRingController({
     const olcekle = () => {
       const sigdir = sigdirRef.current
       if (!sigdir) return
-      const s = Math.max(
-        CEMBER.enKucukOlcek,
-        Math.min(
-          1,
-          Math.min(
+      /*
+       * Referans sahnesi 1680×1060'tır. Geniş ekranda tasarımın kuralı aynen
+       * uygulanır: sahne genişlik VE yüksekliğe sığdırılır.
+       *
+       * Dar ekranda bu kural çemberi boğuyor — 375px'te genişlik oranı 0.22
+       * çıkıyor, taban 0.30'a takılıyor ve kartlar ekranın ortasında minicik
+       * kalıyor. Oysa çemberin tamamının sığması hiç gerekmez: her an yalnızca
+       * öndeki üç kart görünür, yandakilerin taşması zaten istenen görünüm.
+       * Bu yüzden 768px altında ölçek yüksekliğe göre belirlenir.
+       */
+      const dar = window.innerWidth < 768
+      const ham = dar
+        ? (window.innerHeight / CEMBER.referansYukseklik) * 0.58
+        : Math.min(
             window.innerWidth / CEMBER.referansGenislik,
             window.innerHeight / CEMBER.referansYukseklik,
-          ),
-        ),
-      )
+          )
+      const s = Math.max(CEMBER.enKucukOlcek, Math.min(1, ham))
       sigdir.style.transformOrigin = CEMBER.perspektifOdagi
       sigdir.style.transform = `scale(${s.toFixed(3)})`
     }

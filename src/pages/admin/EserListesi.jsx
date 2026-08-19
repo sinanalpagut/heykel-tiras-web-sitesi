@@ -284,7 +284,8 @@ export default function EserListesi() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3 px-[26px] py-5">
-        <div className="flex h-[34px] flex-[0_0_300px] items-center gap-2.5 border border-ink/20 bg-ink/[0.03] px-3 focus-within:border-ink/50">
+        {/* Tel kafeste sabit 300px; dar ekranda sabit taban panel çerçevesini taşıyordu. */}
+        <div className="flex h-[34px] w-full min-w-0 flex-initial items-center gap-2.5 border border-ink/20 bg-ink/[0.03] px-3 focus-within:border-ink/50 sm:w-auto sm:flex-[0_0_300px]">
           <span aria-hidden="true" className="text-mini text-ink/40">
             ⌕
           </span>

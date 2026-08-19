@@ -95,7 +95,7 @@ export default function AtolyeBolumu({ kareler = [], metinler }) {
           <h2
             id="atolye-baslik"
             data-rv
-            className="m-0 font-display text-[clamp(64px,9vw,152px)] font-extrabold leading-[.82] tracking-[-.035em] text-ink"
+            className="m-0 font-display text-[clamp(40px,9vw,152px)] font-extrabold leading-[.82] tracking-[-.035em] text-ink"
           >
             {m.baslik}
           </h2>

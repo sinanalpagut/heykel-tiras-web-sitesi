@@ -28,7 +28,13 @@ export default function GalleryReadout({ eser, indeks, adet }) {
       data-readout=""
       aria-live="polite"
       aria-atomic="true"
-      className="absolute bottom-16 left-1/2 z-okuma flex -translate-x-1/2 items-center gap-[18px] whitespace-nowrap px-5 py-[11px] backdrop-blur-[9px]"
+      /*
+       * Tasarımdaki tek satırlık çubuk 375px'te 539px yer kaplıyor ve iki
+       * yandan kesiliyordu. Geniş ekranda davranış aynı (tek satır, nowrap);
+       * dar ekranda sarma açılır, görüntü alanı genişliğine sabitlenir ve
+       * boşluklar daralır.
+       */
+      className="absolute bottom-16 left-1/2 z-okuma flex max-w-[calc(100vw-24px)] -translate-x-1/2 flex-wrap items-center justify-center gap-x-3 gap-y-1 px-3.5 py-2.5 backdrop-blur-[9px] sm:max-w-none sm:flex-nowrap sm:gap-[18px] sm:whitespace-nowrap sm:px-5 sm:py-[11px]"
       style={{
         background: 'color-mix(in srgb, var(--kb-cikolata, #211A15) 60%, transparent)',
         outline: `1px solid ${inkAlfa(12)}`,
@@ -51,7 +57,10 @@ export default function GalleryReadout({ eser, indeks, adet }) {
         {eser.baslik}
       </span>
       {meta && (
-        <span data-ro-meta="" className="text-micro tracking-[.22em] text-ink opacity-[.42]">
+        <span
+          data-ro-meta=""
+          className="w-full text-center text-micro tracking-[.12em] text-ink opacity-[.42] sm:w-auto sm:text-left sm:tracking-[.22em]"
+        >
           {meta}
         </span>
       )}
