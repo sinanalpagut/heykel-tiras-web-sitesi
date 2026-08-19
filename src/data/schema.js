@@ -133,10 +133,15 @@ const AYLAR = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ'
 /** 29.10.2026 → "29 EKİM 2026" */
 export function tarihMetni(ms, { yilGoster = true } = {}) {
   if (!ms) return ''
+  /*
+   * Tarihler UTC gece yarısı olarak saklanıyor (panelde Date.UTC ile kuruluyor).
+   * Yerel getter'larla okumak negatif saat farkındaki bir ziyaretçide tarihi bir
+   * gün geri kaydırırdı — UTC+3'te fark edilmez ama hata gerçek.
+   */
   const t = new Date(ms)
-  const g = t.getDate()
-  const a = AYLAR[t.getMonth()]
-  return yilGoster ? `${g} ${a} ${t.getFullYear()}` : `${g} ${a}`
+  const g = t.getUTCDate()
+  const a = AYLAR[t.getUTCMonth()]
+  return yilGoster ? `${g} ${a} ${t.getUTCFullYear()}` : `${g} ${a}`
 }
 
 /**
@@ -148,7 +153,7 @@ export function tarihAraligiMetni(baslangic, bitis) {
   if (!bitis) return tarihMetni(baslangic)
   const b = new Date(baslangic)
   const s = new Date(bitis)
-  const ayniYil = b.getFullYear() === s.getFullYear()
+  const ayniYil = b.getUTCFullYear() === s.getUTCFullYear()
   return `${tarihMetni(baslangic, { yilGoster: !ayniYil })} — ${tarihMetni(bitis)}`
 }
 

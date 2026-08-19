@@ -27,6 +27,8 @@
  * @property {(sergi: object) => Promise<object>} sergiOlustur
  * @property {(id: string, yama: object) => Promise<object>} sergiGuncelle
  * @property {(id: string) => Promise<void>} sergiSil
+ * @property {(sergiId: string, dosya: Blob, ustveri: object) => Promise<object>} [afisYukle]
+ * @property {(sergiId: string) => Promise<void>} [afisSil]
  * @property {() => Promise<object>} ayarlariGetir          Taslak ayarlar (önizleme)
  * @property {(yama: object) => Promise<object>} ayarlariKaydet
  * @property {() => Promise<object>} ayarlariYayinla        Yeni sürüm üretir

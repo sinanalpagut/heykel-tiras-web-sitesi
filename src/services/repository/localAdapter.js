@@ -5,7 +5,7 @@
  * (bkz. storage/blobStore.js) durur. Sözleşme services/repository/contract.js.
  */
 import { DepoHatasi, kimlikUret, sirayiYenidenNumarala } from './contract.js'
-import { tohumDurum, VARSAYILAN_AYARLAR } from '../../data/seed.js'
+import { tohumDurum, SERGILER as TOHUM_SERGILER, VARSAYILAN_AYARLAR } from '../../data/seed.js'
 import * as blob from '../storage/blobStore.js'
 
 const ANAHTAR = 'kese-benav/durum'
@@ -61,16 +61,28 @@ function gocur(d, surum) {
   if (surum > SEMA_SURUMU) return null
   let cikti = d
   if (surum < 2) {
+    /*
+     * Dokunulmamış tohum kayıtlarını sadece boş alanlarla doldurmak yetmiyordu:
+     * tarihler v2 ile TOHUM VERİYE geldi, göçte null yazınca yaklaşan sergi
+     * tarihsiz kalıyor ve duyuru şeridi hiç basılmıyordu. Bu yüzden kullanıcının
+     * ELLE DEĞİŞTİRMEDİĞİ kayıtlar tohumun yeni sürümünü alır; değiştirilmiş
+     * olanlar korunur ve yalnızca eksik alanları varsayılanla tamamlanır.
+     * "Değiştirilmemiş" ölçütü v1'de var olan alanların birebir eşitliğidir.
+     */
+    const tohum = new Map(TOHUM_SERGILER.map((t) => [t.id, t]))
+    const V1_ALANLARI = ['yil', 'ad', 'mekan', 'sehir', 'tur']
+    const ayni = (a, b) =>
+      V1_ALANLARI.every((k) => a[k] === b[k]) &&
+      (a.eserIdleri || []).length === (b.eserIdleri || []).length &&
+      (a.eserIdleri || []).every((x, i) => x === b.eserIdleri[i])
+
     cikti = {
       ...cikti,
-      sergiler: (cikti.sergiler || []).map((s) => ({
-        baslangic: null,
-        bitis: null,
-        aciklama: '',
-        afis: null,
-        baglanti: '',
-        ...s,
-      })),
+      sergiler: (cikti.sergiler || []).map((s) => {
+        const t = tohum.get(s.id)
+        if (t && ayni(s, t)) return { ...t, eserIdleri: [...t.eserIdleri], afis: t.afis ? { ...t.afis } : null }
+        return { baslangic: null, bitis: null, aciklama: '', afis: null, baglanti: '', ...s }
+      }),
     }
   }
   return cikti
