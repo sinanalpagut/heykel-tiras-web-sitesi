@@ -1,0 +1,128 @@
+rules_version = '2';
+
+/**
+ * Kese Benav — Firestore güvenlik kuralları.
+ *
+ * Temel ayrım: SİTE herkese açıktır, PANEL değildir.
+ *   - Ziyaretçi yalnızca durum == 'yayinda' olan eserleri ve yayınlanmış
+ *     ayarları (yayinlar koleksiyonu) okuyabilir.
+ *   - Taslak/arşiv eserler ve taslak ayarlar (ayarlar/site) yalnızca yöneticiye.
+ *   - Yazma hakkı tek bir şeye bağlıdır: /yoneticiler/{uid} belgesinin varlığı.
+ *     Kullanıcı oluşturmak yetki vermez; yönetici kaydı Firebase Console'dan
+ *     elle açılır. Böylece "kayıt ol" ile panele girilemez.
+ *
+ * Kurallar istemciye güvenmez: alan doğrulaması burada da yapılır, çünkü
+ * arayüzdeki doğrulama yalnızca hatayı erken göstermek içindir.
+ */
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* ---------- ortak yardımcılar ---------- */
+
+    // Yönetici = oturum açmış VE /yoneticiler/{uid} belgesi olan kullanıcı.
+    function yoneticiMi() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/yoneticiler/$(request.auth.uid));
+    }
+
+    function metinDolu(veri, alan) {
+      return alan in veri && veri[alan] is string && veri[alan].size() > 0;
+    }
+
+    /* ---------- yoneticiler ---------- */
+
+    match /yoneticiler/{uid} {
+      // Kullanıcı yalnızca KENDİ yönetici kaydını okuyabilir. İstemci bu okumayla
+      // "panelin tamamını isteyebilir miyim" sorusunu kural motoruyla aynı ölçüte
+      // göre yanıtlar; yönetici listesi dışarıya sızmaz.
+      allow get: if request.auth != null && request.auth.uid == uid;
+
+      // Liste ve yazma kapalı: yetki yalnızca Console/Admin SDK ile verilir.
+      // Aksi halde bir yönetici kendi kendine yeni yönetici üretebilirdi.
+      allow list: if false;
+      allow write: if false;
+    }
+
+    /* ---------- eserler ---------- */
+
+    match /eserler/{eserId} {
+      // Eserin sitede görünmesi için gereken asgari alanlar. update'te de
+      // çalışır, çünkü request.resource.data yazma SONRASI belgenin tamamıdır —
+      // yani tek alanlık bir yama bile belgeyi geçersiz hale getiremez.
+      function eserGecerli(veri) {
+        return metinDolu(veri, 'baslik')
+          && veri.yil is number
+          && veri.malzemeSinifi in ['metal', 'tas']
+          && veri.durum in ['yayinda', 'taslak', 'arsiv'];
+      }
+
+      // get: yayındaki eser herkese açık, diğerleri yöneticiye.
+      // list: kural her belge için ayrı çalışır ve BİR belge bile düşerse sorgu
+      //       tümden reddedilir. Bu yüzden ziyaretçi sorgusu
+      //       where('durum','==','yayinda') ile kısıtlanmak zorundadır
+      //       (bkz. firebaseAdapter.yayindakiEserler).
+      allow read: if yoneticiMi()
+        || (resource != null && resource.data.durum == 'yayinda');
+
+      allow create: if yoneticiMi() && eserGecerli(request.resource.data);
+      allow update: if yoneticiMi() && eserGecerli(request.resource.data);
+      allow delete: if yoneticiMi();
+    }
+
+    /* ---------- süreç kareleri (atölye şeridi) ---------- */
+
+    match /surecKareleri/{kareId} {
+      // Taslak kavramı yok: bu kareler yayınlanmak üzere vardır.
+      allow read: if true;
+      allow write: if yoneticiMi()
+        && metinDolu(request.resource.data, 'kod')
+        && metinDolu(request.resource.data, 'baslik')
+        && request.resource.data.sira is number;
+    }
+
+    /* ---------- sergiler ---------- */
+
+    match /sergiler/{sergiId} {
+      allow read: if true;
+      allow create, update: if yoneticiMi()
+        && metinDolu(request.resource.data, 'ad')
+        && request.resource.data.yil is number
+        && request.resource.data.tur in ['kisisel', 'grup'];
+      allow delete: if yoneticiMi();
+    }
+
+    /* ---------- taslak ayarlar ---------- */
+
+    match /ayarlar/{belgeId} {
+      // ayarlar/site YAYINLANMAMIŞ ayarlardır — panelin önizlemesi. Ziyaretçiye
+      // kapalıdır; site yayınlanmış kopyayı /yayinlar altından okur.
+      allow read: if yoneticiMi();
+      allow write: if yoneticiMi();
+    }
+
+    /* ---------- yayınlar ---------- */
+
+    match /yayinlar/{yayinId} {
+      // Sitenin gördüğü tek ayar kaynağı; herkese açık.
+      allow read: if true;
+
+      allow create: if yoneticiMi()
+        && request.resource.data.surum is number
+        && request.resource.data.zaman is number
+        && request.resource.data.ayarlar is map
+        && request.resource.data.cemberSirasi is list;
+
+      // Yayın geçmişi değiştirilemez. "Geri dön" bile yeni bir sürüm yazar;
+      // eski kayıt silinseydi neyin yayında olduğunun izi kalmazdı.
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /* ---------- geri kalan her şey ---------- */
+
+    // Yeni bir koleksiyon eklendiğinde kural yazılana kadar kapalı kalsın.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

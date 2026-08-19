@@ -1,0 +1,106 @@
+import { useEffect, useMemo, useRef } from 'react'
+import { useDepoVerisi } from '../services/DepoContext.jsx'
+import { applyTokens } from '../config/tokens.js'
+import useReducedMotion from '../hooks/useReducedMotion.js'
+import useGsapReveal, { useHeroKoreografi } from '../hooks/useGsapReveal.js'
+import ShaderArkaPlan from '../components/site/ShaderArkaPlan.jsx'
+import KilavuzCizgileri from '../components/site/KilavuzCizgileri.jsx'
+import OzelImlec from '../components/site/OzelImlec.jsx'
+import SiteNav from '../components/site/SiteNav.jsx'
+import SculptureGallery from '../components/site/SculptureGallery.jsx'
+import AtolyeBolumu from '../components/site/AtolyeBolumu.jsx'
+import Kolofon from '../components/site/Kolofon.jsx'
+import PerdeYukleniyor from '../components/common/PerdeYukleniyor.jsx'
+import HataKutusu from '../components/common/HataKutusu.jsx'
+
+/**
+ * Ziyaretçinin gördüğü tek sayfa.
+ *
+ * Site TASLAK değil YAYINLANMIŞ veriyi okur: ayarlar `yayindakiAyarlariGetir`,
+ * çember sırası `yayindakiCemberSirasi` üzerinden gelir. Yönetim panelinde
+ * yapılan değişiklik "Yayınla" denene kadar buraya yansımaz — tel kafesteki
+ * A4/A6 notlarının gereği.
+ */
+export default function HomePage() {
+  const hareketAzalt = useReducedMotion()
+  const sayfaRef = useRef(null)
+  const heroRef = useRef(null)
+
+  const { veri, yukleniyor, hata } = useDepoVerisi(async (depo) => {
+    const [ayarlar, cemberSirasi, eserler, surecKareleri] = await Promise.all([
+      depo.yayindakiAyarlariGetir(),
+      depo.yayindakiCemberSirasi(),
+      depo.eserleriGetir(),
+      depo.surecKareleriniGetir(),
+    ])
+    return { ayarlar, cemberSirasi, eserler, surecKareleri }
+  }, [])
+
+  const ayarlar = veri?.ayarlar
+  const doku = ayarlar?.doku
+
+  /* Yayınlanmış jetonları belgeye uygula — Tailwind renkleri bu değişkenleri okuyor. */
+  useEffect(() => {
+    if (ayarlar) applyTokens(ayarlar.jetonlar, ayarlar.tipografi)
+  }, [ayarlar])
+
+  /* Çember, yayınlanmış sıraya göre dizilir. */
+  const cemberEserleri = useMemo(() => {
+    if (!veri) return []
+    const harita = new Map(veri.eserler.map((e) => [e.id, e]))
+    return veri.cemberSirasi.map((id) => harita.get(id)).filter(Boolean)
+  }, [veri])
+
+  /* Kolofon ve nav'daki sayılar arşivin tamamından türer, çemberdekilerden değil. */
+  const arsiv = useMemo(() => {
+    const yayinda = veri?.eserler.filter((e) => e.durum === 'yayinda') ?? []
+    const yillar = yayinda.map((e) => e.yil).filter(Boolean)
+    return {
+      adet: yayinda.length,
+      yilAraligi: yillar.length ? { ilk: Math.min(...yillar), son: Math.max(...yillar) } : null,
+      sonGuncelleme: yayinda.reduce((m, e) => Math.max(m, e.guncellendi || 0), 0) || null,
+    }
+  }, [veri])
+
+  useGsapReveal(sayfaRef, { kapali: hareketAzalt || yukleniyor })
+  useHeroKoreografi(heroRef, { kapali: hareketAzalt || yukleniyor })
+
+  if (yukleniyor) return <PerdeYukleniyor mesaj="ARŞİV AÇILIYOR" />
+
+  if (hata) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-beton p-8">
+        <HataKutusu hata={hata} yenidenDene={() => window.location.reload()} className="max-w-xl" />
+      </div>
+    )
+  }
+
+  return (
+    <div ref={sayfaRef} className="relative w-full bg-beton text-ink">
+      <ShaderArkaPlan
+        gren={doku?.gren}
+        metalRengi={ayarlar?.jetonlar?.metal}
+        tasRengi={ayarlar?.jetonlar?.tas}
+      />
+      <KilavuzCizgileri kapali={doku?.kilavuz === false} />
+      <OzelImlec kapali={doku?.ozelImlec === false} />
+
+      <SiteNav kimlik={ayarlar?.kimlik} eserAdedi={arsiv.adet} />
+
+      <main>
+        <div ref={heroRef}>
+          <SculptureGallery eserler={cemberEserleri} ayarlar={ayarlar} />
+        </div>
+
+        <AtolyeBolumu kareler={veri?.surecKareleri ?? []} />
+      </main>
+
+      <Kolofon
+        kimlik={ayarlar?.kimlik}
+        eserAdedi={arsiv.adet}
+        yilAraligi={arsiv.yilAraligi}
+        sonGuncelleme={arsiv.sonGuncelleme}
+      />
+    </div>
+  )
+}

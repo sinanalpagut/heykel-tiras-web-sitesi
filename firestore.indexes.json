@@ -1,0 +1,13 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "eserler",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "durum", "order": "ASCENDING" },
+        { "fieldPath": "sira", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

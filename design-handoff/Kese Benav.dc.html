@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#35322D; }
+  body { overflow-x:clip; }
+  * { -webkit-font-smoothing:antialiased; }
+  a { color:#EAEAEA; text-decoration:none; border-bottom:1px solid rgba(234,234,234,.3); }
+  a:hover { color:#C15D3B; border-bottom-color:#C15D3B; }
+  ::selection { background:#367C65; color:#EAEAEA; }
+  @keyframes kb-blink { 0%,49%{opacity:1} 50%,100%{opacity:.15} }
+  @keyframes kb-creep { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+</style>
+<script src="./image-slot.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</helmet>
+
+<div data-root style="position:relative; width:100%; background:#35322D; color:#EAEAEA; cursor:none; font-family:'Space Mono', ui-monospace, monospace;">
+
+  <canvas data-bg style="position:fixed; inset:0; width:100%; height:100%; z-index:0; display:block;"></canvas>
+  <canvas data-fg style="position:fixed; inset:0; width:100%; height:100%; z-index:26; display:block; pointer-events:none; mix-blend-mode:screen; opacity:.42;"></canvas>
+
+  <div data-grid style="position:fixed; inset:0; z-index:2; pointer-events:none; display:grid; grid-template-columns:repeat(6, 1fr);">
+    <div style="border-right:1px solid rgba(234,234,234,.05);"></div>
+    <div style="border-right:1px solid rgba(234,234,234,.05);"></div>
+    <div style="border-right:1px solid rgba(234,234,234,.08);"></div>
+    <div style="border-right:1px solid rgba(234,234,234,.05);"></div>
+    <div style="border-right:1px solid rgba(234,234,234,.05);"></div>
+    <div></div>
+  </div>
+
+  <div data-cursor style="position:fixed; top:0; left:0; z-index:99; pointer-events:none; will-change:transform; mix-blend-mode:difference;">
+    <div data-cur-dot style="position:absolute; width:7px; height:7px; margin:-3.5px 0 0 -3.5px; border-radius:50%; background:#EAEAEA; transition:opacity .2s;"></div>
+    <div data-cur-ring style="position:absolute; width:58px; height:58px; margin:-29px 0 0 -29px; border:1px solid rgba(234,234,234,.85); border-radius:50%; opacity:0; transform:scale(.4); transition:opacity .25s, transform .35s cubic-bezier(.16,1,.3,1);"></div>
+    <div data-cur-plus style="position:absolute; width:38px; height:38px; margin:-19px 0 0 -19px; opacity:0; transform:rotate(-30deg) scale(.5); transition:opacity .2s, transform .4s cubic-bezier(.16,1,.3,1);">
+      <div style="position:absolute; top:50%; left:0; width:100%; height:1px; background:#EAEAEA;"></div>
+      <div style="position:absolute; left:50%; top:0; width:1px; height:100%; background:#EAEAEA;"></div>
+    </div>
+  </div>
+
+  <nav style="position:fixed; inset:0; z-index:60; pointer-events:none; font-size:10px; letter-spacing:.24em; text-transform:uppercase;">
+    <div style="position:absolute; top:26px; left:30px; pointer-events:auto;">
+      <div style="font-family:Syne, sans-serif; font-weight:800; font-size:19px; letter-spacing:.02em; line-height:1;">KESE BENAV</div>
+      <div style="margin-top:7px; font-size:9px; letter-spacing:.3em; color:rgba(234,234,234,.42);">HEYKEL — İSTANBUL</div>
+    </div>
+    <div style="position:absolute; top:26px; right:30px; pointer-events:auto; text-align:right; display:flex; flex-direction:column; gap:7px; align-items:flex-end;">
+      <div style="display:flex; align-items:center; gap:9px;"><span style="width:5px; height:5px; background:#C15D3B; animation:kb-blink 1.9s steps(1,end) infinite;"></span><span>ESERLER</span></div>
+      <div style="font-size:9px; letter-spacing:.3em; color:rgba(234,234,234,.42);">ARŞİV 01—15</div>
+    </div>
+    <div style="position:absolute; bottom:26px; left:30px; pointer-events:auto; display:flex; flex-direction:column; gap:7px;">
+      <div>BİYOGRAFİ</div>
+      <div style="font-size:9px; letter-spacing:.3em; color:rgba(234,234,234,.42);">1987, ÇORUM</div>
+    </div>
+    <div style="position:absolute; bottom:26px; right:30px; pointer-events:auto; text-align:right; display:flex; flex-direction:column; gap:7px;">
+      <div>İLETİŞİM</div>
+      <div style="font-size:9px; letter-spacing:.3em; color:rgba(234,234,234,.42);">ATOLYE@KESEBENAV.ART</div>
+    </div>
+    <div style="position:absolute; top:50%; left:14px; transform:translateY(-50%) rotate(180deg); writing-mode:vertical-rl; font-size:9px; letter-spacing:.34em; color:rgba(234,234,234,.3);">SÜRÜKLE — DÖNDÜR</div>
+    <div style="position:absolute; top:50%; right:14px; transform:translateY(-50%); writing-mode:vertical-rl; font-size:9px; letter-spacing:.34em; color:rgba(234,234,234,.3);">41.0082 N / 28.9784 E</div>
+  </nav>
+
+  <section data-screen-label="Hero — Çember" style="position:relative; z-index:5; height:100vh; min-height:560px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+
+    <div data-bigname style="position:absolute; top:50%; left:50%; transform:translate(-50%,-52%); z-index:4; pointer-events:none; text-align:center; font-family:Syne, sans-serif; font-weight:800; font-size:clamp(120px, 17.5vw, 300px); line-height:.8; letter-spacing:-.03em; color:#211A15; white-space:nowrap;">
+      KESE<br>BENAV
+    </div>
+
+    <div data-ring-wrap style="position:absolute; inset:0; z-index:10; display:flex; align-items:center; justify-content:center;">
+     <div data-ring-fit style="position:relative; width:100%; height:100%; transform-origin:50% 46%;">
+      <div data-zone="gallery" style="position:relative; width:100%; height:100%; perspective:1500px; perspective-origin:50% 46%;">
+        <div data-ring style="position:absolute; top:0; left:0; width:100%; height:100%; transform-style:preserve-3d; transform:rotateX(-7deg) rotateY(0deg); touch-action:pan-y;">
+
+          <div data-work data-i="1" data-mat="metal" data-title="ÇÖZÜLME" data-material="OKSİTLENMİŞ BAKIR" data-year="2024" data-dim="240×90×90 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(0deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w01" shape="rect" placeholder="01 ÇÖZÜLME"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">01</span>
+              <span style="font-size:11px; letter-spacing:.14em;">ÇÖZÜLME</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+          <div data-work data-i="2" data-mat="tas" data-title="KİRLİ AY" data-material="BAZALT" data-year="2023" data-dim="110×110×40 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(24deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w02" shape="rect" placeholder="02 KİRLİ AY"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">02</span>
+              <span style="font-size:11px; letter-spacing:.14em;">KİRLİ AY</span>
+              <span data-accent="tas" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">TAŞ</span>
+            </div>
+          </div>
+
+          <div data-work data-i="3" data-mat="metal" data-title="GÖVDE ÇALIŞMASI IV" data-material="DÖVME ÇELİK" data-year="2024" data-dim="190×70×60 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(48deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w03" shape="rect" placeholder="03 GÖVDE ÇALIŞMASI IV"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">03</span>
+              <span style="font-size:11px; letter-spacing:.14em;">GÖVDE ÇALIŞMASI IV</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+          <div data-work data-i="4" data-mat="tas" data-title="TUZ SÜTUNU" data-material="TRAVERTEN" data-year="2022" data-dim="300×55×55 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(72deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w04" shape="rect" placeholder="04 TUZ SÜTUNU"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">04</span>
+              <span style="font-size:11px; letter-spacing:.14em;">TUZ SÜTUNU</span>
+              <span data-accent="tas" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">TAŞ</span>
+            </div>
+          </div>
+
+          <div data-work data-i="5" data-mat="metal" data-title="ARTIK" data-material="PİRİNÇ DÖKÜM" data-year="2025" data-dim="85×120×80 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(96deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w05" shape="rect" placeholder="05 ARTIK"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">05</span>
+              <span style="font-size:11px; letter-spacing:.14em;">ARTIK</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+          <div data-work data-i="6" data-mat="tas" data-title="SESSİZ KOVA" data-material="ANDEZİT" data-year="2021" data-dim="95×95×95 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(120deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w06" shape="rect" placeholder="06 SESSİZ KOVA"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">06</span>
+              <span style="font-size:11px; letter-spacing:.14em;">SESSİZ KOVA</span>
+              <span data-accent="tas" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">TAŞ</span>
+            </div>
+          </div>
+
+          <div data-work data-i="7" data-mat="metal" data-title="KIRIK EKSEN" data-material="PASLANMAZ ÇELİK" data-year="2025" data-dim="420×60×60 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(144deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w07" shape="rect" placeholder="07 KIRIK EKSEN"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">07</span>
+              <span style="font-size:11px; letter-spacing:.14em;">KIRIK EKSEN</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+          <div data-work data-i="8" data-mat="tas" data-title="TOPRAK ANITI" data-material="PİŞMİŞ KİL" data-year="2023" data-dim="160×140×110 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(168deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w08" shape="rect" placeholder="08 TOPRAK ANITI"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">08</span>
+              <span style="font-size:11px; letter-spacing:.14em;">TOPRAK ANITI</span>
+              <span data-accent="tas" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">TAŞ</span>
+            </div>
+          </div>
+
+          <div data-work data-i="9" data-mat="metal" data-title="ASILI YÜK" data-material="KURŞUN & HALAT" data-year="2024" data-dim="210×80×80 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(192deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w09" shape="rect" placeholder="09 ASILI YÜK"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">09</span>
+              <span style="font-size:11px; letter-spacing:.14em;">ASILI YÜK</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+          <div data-work data-i="10" data-mat="tas" data-title="YARIK" data-material="MERMER ARTIĞI" data-year="2020" data-dim="130×200×70 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(216deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w10" shape="rect" placeholder="10 YARIK"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">10</span>
+              <span style="font-size:11px; letter-spacing:.14em;">YARIK</span>
+              <span data-accent="tas" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">TAŞ</span>
+            </div>
+          </div>
+
+          <div data-work data-i="11" data-mat="metal" data-title="İSKELE" data-material="HURDA DEMİR" data-year="2026" data-dim="380×250×180 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(240deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w11" shape="rect" placeholder="11 İSKELE"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">11</span>
+              <span style="font-size:11px; letter-spacing:.14em;">İSKELE</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+          <div data-work data-i="12" data-mat="tas" data-title="KABUK" data-material="KİREÇTAŞI" data-year="2022" data-dim="70×180×65 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(264deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w12" shape="rect" placeholder="12 KABUK"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">12</span>
+              <span style="font-size:11px; letter-spacing:.14em;">KABUK</span>
+              <span data-accent="tas" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">TAŞ</span>
+            </div>
+          </div>
+
+          <div data-work data-i="13" data-mat="metal" data-title="ÇENGEL" data-material="BAKIR ALAŞIM" data-year="2025" data-dim="145×40×40 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(288deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w13" shape="rect" placeholder="13 ÇENGEL"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">13</span>
+              <span style="font-size:11px; letter-spacing:.14em;">ÇENGEL</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+          <div data-work data-i="14" data-mat="tas" data-title="UYKU TAŞI" data-material="GRANİT" data-year="2019" data-dim="60×240×90 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(312deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w14" shape="rect" placeholder="14 UYKU TAŞI"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">14</span>
+              <span style="font-size:11px; letter-spacing:.14em;">UYKU TAŞI</span>
+              <span data-accent="tas" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">TAŞ</span>
+            </div>
+          </div>
+
+          <div data-work data-i="15" data-mat="metal" data-title="KALINTI No.3" data-material="BETON & ÇELİK" data-year="2026" data-dim="260×260×120 CM" style="position:absolute; top:50%; left:50%; width:250px; margin:-188px 0 0 -125px; transform:rotateY(336deg) translateZ(780px);">
+            <div style="position:absolute; left:50%; bottom:100%; width:1px; height:44vh; background:linear-gradient(to bottom, rgba(234,234,234,0), rgba(234,234,234,.26));"></div>
+            <div style="position:relative; width:250px; height:320px; background:#211A15; outline:1px solid rgba(234,234,234,.13); box-shadow:0 46px 70px -34px rgba(0,0,0,.8);">
+              <image-slot id="kb-w15" shape="rect" placeholder="15 KALINTI No.3"></image-slot>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:10px; padding-top:13px;">
+              <span style="font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.4);">15</span>
+              <span style="font-size:11px; letter-spacing:.14em;">KALINTI No.3</span>
+              <span data-accent="metal" style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#367C65;">METAL</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+     </div>
+    </div>
+
+    <div style="position:absolute; left:50%; bottom:112px; transform:translateX(-50%); z-index:28; pointer-events:none; font-family:Syne, sans-serif; font-weight:800; font-size:clamp(70px,9vw,150px); line-height:1; letter-spacing:.12em; color:rgba(234,234,234,.07); white-space:nowrap;">HEYKEL</div>
+
+    <div data-readout style="position:absolute; left:50%; bottom:64px; transform:translateX(-50%); z-index:40; display:flex; align-items:center; gap:18px; padding:11px 20px; background:rgba(33,26,21,.6); backdrop-filter:blur(9px); outline:1px solid rgba(234,234,234,.12); white-space:nowrap;">
+      <span data-ro-dot style="width:6px; height:6px; background:#367C65;"></span>
+      <span data-ro-idx style="font-size:10px; letter-spacing:.2em; color:rgba(234,234,234,.5);">01 / 15</span>
+      <span data-ro-title style="font-family:Syne, sans-serif; font-weight:700; font-size:14px; letter-spacing:.06em;">ÇÖZÜLME</span>
+      <span data-ro-meta style="font-size:9px; letter-spacing:.22em; color:rgba(234,234,234,.42);">OKSİTLENMİŞ BAKIR · 2024 · 240×90×90 CM</span>
+    </div>
+  </section>
+
+  <section data-screen-label="Atölye — Süreç" style="position:relative; z-index:5; padding:170px 30px 190px; overflow:hidden;">
+
+    <div data-creep style="position:absolute; top:52px; left:0; z-index:1; pointer-events:none; font-family:Syne, sans-serif; font-weight:800; font-size:clamp(90px,13vw,220px); line-height:.85; letter-spacing:-.02em; color:rgba(33,26,21,.8); white-space:nowrap;">SÜREÇ — SÜREÇ — SÜREÇ —</div>
+
+    <div style="position:relative; z-index:3; max-width:1560px; margin:0 auto;">
+
+      <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:60px; padding-bottom:16px; border-bottom:1px solid rgba(234,234,234,.16);">
+        <h2 data-rv style="margin:0; font-family:Syne, sans-serif; font-weight:800; font-size:clamp(64px,9vw,152px); line-height:.82; letter-spacing:-.035em; color:#EAEAEA;">ATÖLYE</h2>
+        <div data-rv style="max-width:390px; padding-bottom:14px; font-size:12px; line-height:1.85; letter-spacing:.04em; color:rgba(234,234,234,.62); text-wrap:pretty;">Kayıtlar Karaköy'deki döküm atölyesinde, 2019'dan bu yana tutuluyor. Malzeme direnir; direnç kaydedilir. Aşağıdaki kareler tamamlanmış işler değil, terk edilme anlarıdır.</div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(12,1fr); gap:22px; padding-top:56px;">
+
+        <div data-rv style="grid-column:1 / span 5;">
+          <div style="position:relative; height:560px; background:#211A15; outline:1px solid rgba(234,234,234,.12);">
+            <image-slot id="kb-p01" shape="rect" placeholder="Kalıp açma — 04:12"></image-slot>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding-top:12px; font-size:9px; letter-spacing:.24em; color:rgba(234,234,234,.45);"><span>P.01 — KALIP AÇMA</span><span style="color:#C15D3B;">04:12</span></div>
+        </div>
+
+        <div data-rv style="grid-column:7 / span 4; padding-top:96px;">
+          <div style="position:relative; height:370px; background:#211A15; outline:1px solid rgba(234,234,234,.12);">
+            <image-slot id="kb-p02" shape="rect" placeholder="Döküm — 21:40"></image-slot>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding-top:12px; font-size:9px; letter-spacing:.24em; color:rgba(234,234,234,.45);"><span>P.02 — BAKIR DÖKÜM</span><span style="color:#367C65;">21:40</span></div>
+        </div>
+
+        <div data-rv style="grid-column:11 / span 2; padding-top:250px;">
+          <div style="position:relative; height:210px; background:#211A15; outline:1px solid rgba(234,234,234,.12);">
+            <image-slot id="kb-p03" shape="rect" placeholder="Talaş"></image-slot>
+          </div>
+          <div style="padding-top:12px; font-size:9px; letter-spacing:.24em; color:rgba(234,234,234,.45);">P.03 — TALAŞ</div>
+        </div>
+
+        <div data-rv style="grid-column:3 / span 3; padding-top:40px;">
+          <div style="position:relative; height:300px; background:#211A15; outline:1px solid rgba(234,234,234,.12);">
+            <image-slot id="kb-p04" shape="rect" placeholder="Yüzey aşındırma"></image-slot>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding-top:12px; font-size:9px; letter-spacing:.24em; color:rgba(234,234,234,.45);"><span>P.04 — AŞINDIRMA</span><span style="color:#C15D3B;">09:03</span></div>
+        </div>
+
+        <div data-rv style="grid-column:7 / span 6; padding-top:8px;">
+          <div style="position:relative; height:430px; background:#211A15; outline:1px solid rgba(234,234,234,.12);">
+            <image-slot id="kb-p05" shape="rect" placeholder="Atölye — geniş kare"></image-slot>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding-top:12px; font-size:9px; letter-spacing:.24em; color:rgba(234,234,234,.45);"><span>P.05 — GÜNEY DUVARI, TERK EDİLMİŞ İŞLER</span><span>KARAKÖY / İST</span></div>
+        </div>
+
+      </div>
+
+      <div data-rv style="display:flex; align-items:flex-start; gap:40px; padding-top:130px;">
+        <div style="flex:0 0 auto; font-family:Syne, sans-serif; font-weight:800; font-size:clamp(46px,6.4vw,104px); line-height:.86; letter-spacing:-.03em; color:#EAEAEA;">MALZEME<br><span style="color:#C15D3B;">DİRENİR</span></div>
+        <div style="flex:1; max-width:420px; padding-top:12px; font-size:12px; line-height:1.9; letter-spacing:.04em; color:rgba(234,234,234,.58); text-wrap:pretty;">Bir taşı kesmek onu ikna etmek değildir. Yontma, iki iradenin çarpışmasıdır ve yüzeyde kalan iz her zaman kavganın kaydıdır — benim değil, malzemenin son sözü.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer data-screen-label="Kolofon" style="position:relative; z-index:5; padding:80px 30px 0; border-top:1px solid rgba(234,234,234,.16); overflow:hidden;">
+    <div style="max-width:1560px; margin:0 auto;">
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:40px; font-size:10px; letter-spacing:.2em; line-height:2.2;">
+        <div>
+          <div style="color:rgba(234,234,234,.35); padding-bottom:14px;">İLETİŞİM</div>
+          <div>ATOLYE@KESEBENAV.ART</div>
+          <div>+90 212 000 00 00</div>
+        </div>
+        <div>
+          <div style="color:rgba(234,234,234,.35); padding-bottom:14px;">ATÖLYE</div>
+          <div>KEMANKEŞ CAD. 44/B</div>
+          <div>KARAKÖY, İSTANBUL</div>
+        </div>
+        <div>
+          <div style="color:rgba(234,234,234,.35); padding-bottom:14px;">TEMSİL</div>
+          <div>GALERİ HAM — İSTANBUL</div>
+          <div>SPUR PROJECTS — BERLİN</div>
+        </div>
+        <div>
+          <div style="color:rgba(234,234,234,.35); padding-bottom:14px;">ARŞİV</div>
+          <div>15 ESER / 2019—2026</div>
+          <div>SON GÜNCELLEME 19.08.26</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:30px; padding-top:74px; font-size:9px; letter-spacing:.26em; color:rgba(234,234,234,.3);">
+        <span>© 2026 KESE BENAV — TÜM İŞLER TESCİLLİDİR</span>
+        <span>NO INDEX / NO CACHE / NO APOLOGY</span>
+      </div>
+      <div style="font-family:Syne, sans-serif; font-weight:800; font-size:clamp(44px,9.6vw,158px); line-height:.72; letter-spacing:-.045em; color:#211A15; white-space:nowrap; padding-top:34px; margin-bottom:-.14em; user-select:none;">KESE BENAV</div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;autoRotate&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Çember&quot;},&quot;grain&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.085,&quot;min&quot;:0,&quot;max&quot;:0.25,&quot;step&quot;:0.005,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Doku&quot;},&quot;showGrid&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Doku&quot;},&quot;metalAccent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#367C65&quot;,&quot;options&quot;:[&quot;#367C65&quot;,&quot;#4A7C59&quot;,&quot;#2F6E7A&quot;,&quot;#7C6A3C&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Vurgu renkleri&quot;},&quot;stoneAccent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C15D3B&quot;,&quot;options&quot;:[&quot;#C15D3B&quot;,&quot;#A8452C&quot;,&quot;#C98A4B&quot;,&quot;#8E5A3E&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Vurgu renkleri&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() {
+    this.rot = 0; this.vel = 0; this.drag = false; this.lastX = 0; this.frontIdx = -1;
+    this.mouse = { x: innerWidth / 2, y: innerHeight / 2 };
+    this.cur = { x: this.mouse.x, y: this.mouse.y };
+    this.scroll = 0;
+    this.root = this.dom();
+    if (!this.root) return;
+    this.works = Array.from(this.root.querySelectorAll('[data-work]'));
+    this.blurCache = new Array(this.works.length).fill(-1);
+    this.applyAccents();
+    this.initGL();
+    this.initPointer();
+    this.initRing();
+    this.waitGsap();
+    this.raf = requestAnimationFrame(this.tick);
+  }
+
+  componentDidUpdate() { this.applyAccents(); }
+
+  componentWillUnmount() {
+    cancelAnimationFrame(this.raf);
+    (this.cleanups || []).forEach(fn => fn());
+  }
+
+  dom() {
+    const el = document.querySelector('[data-root] [data-ring]');
+    return el ? el.closest('[data-root]') : document.querySelector('[data-root]');
+  }
+
+  applyAccents() {
+    if (!this.root) return;
+    const m = this.props.metalAccent, s = this.props.stoneAccent;
+    if (m) this.root.querySelectorAll('[data-accent="metal"]').forEach(e => { e.style.color = m; });
+    if (s) this.root.querySelectorAll('[data-accent="tas"]').forEach(e => { e.style.color = s; });
+    const grid = this.root.querySelector('[data-grid]');
+    if (grid) grid.style.display = this.props.showGrid === false ? 'none' : 'grid';
+  }
+
+  accent(mat) {
+    if (mat === 'metal') return this.props.metalAccent || '#367C65';
+    return this.props.stoneAccent || '#C15D3B';
+  }
+
+  /* ---------- WebGL field: blurred geometric forms + concrete grain ---------- */
+  initGL() {
+    const vs = `attribute vec2 p; void main(){ gl_Position = vec4(p,0.,1.); }`;
+    const fs = `precision highp float;
+uniform vec2 uRes; uniform float uT, uScroll, uLayer, uGrain;
+uniform vec3 uMetal, uStone;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453123); }
+float vnoise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+  float a=hash(i), b=hash(i+vec2(1.,0.)), c=hash(i+vec2(0.,1.)), d=hash(i+vec2(1.,1.));
+  return mix(mix(a,b,f.x), mix(c,d,f.x), f.y); }
+float fbm(vec2 p){ float s=0., a=.5; for(int i=0;i<5;i++){ s+=a*vnoise(p); p*=2.07; a*=.5; } return s; }
+mat2 rot(float a){ float c=cos(a), s=sin(a); return mat2(c,-s,s,c); }
+float sdBox(vec2 p, vec2 b){ vec2 d=abs(p)-b; return length(max(d,0.))+min(max(d.x,d.y),0.); }
+float sBox(vec2 p, vec2 c, vec2 b, float a, float bl){ return 1.-smoothstep(-bl,bl, sdBox(rot(a)*(p-c), b)); }
+float sCirc(vec2 p, vec2 c, float r, float bl){ return 1.-smoothstep(-bl,bl, length(p-c)-r); }
+float sRing(vec2 p, vec2 c, float r, float th, float bl){ return 1.-smoothstep(-bl,bl, abs(length(p-c)-r)-th); }
+void main(){
+  vec2 p = (gl_FragCoord.xy - .5*uRes)/uRes.y;
+  float sc = uScroll, t = uT;
+  vec3 col;
+  if(uLayer < .5){
+    float n = fbm(p*3.1 + vec2(.0, sc*.30));
+    float n2 = fbm(p*13.0 + 7.3);
+    col = mix(vec3(.161,.149,.133), vec3(.259,.243,.216), n);
+    col = mix(col, vec3(.106,.098,.086), smoothstep(.44,.94,n2)*.40);
+    col *= .90 + .18*fbm(p*1.15 - vec2(sc*.18, 0.));
+    col += .026*smoothstep(.62,1.0,fbm(p*26.));
+    col = mix(col, vec3(.043,.035,.027), sBox(p, vec2(-.78, .34 - sc*.55), vec2(.30,.66), .30, .17)*.72);
+    col = mix(col, vec3(.043,.035,.027), sBox(p, vec2(.40, .60 - sc*1.25), vec2(.52,.075), -.13, .085)*.55);
+    col = mix(col, uMetal*.52, sCirc(p, vec2(.70,-.22 + sc*.95), .31, .24)*.30);
+    col = mix(col, uStone*.46, sRing(p, vec2(-.40,-.54 + sc*.65), .44, .018, .13)*.34);
+    col = mix(col, vec3(.30,.28,.25), sCirc(p, vec2(.02 + sin(t*.06)*.05, -1.0 + sc*.45), .52, .34)*.16);
+    col *= 1. - .50*pow(length(p*vec2(.60,.92)), 2.1);
+  } else {
+    col = vec3(0.);
+    col += vec3(.20,.19,.17) * sCirc(p, vec2(-.58, .06 + sc*1.70), .40, .36);
+    col += uMetal*.30 * sBox(p, vec2(.56,-.34 - sc*1.15), vec2(.24,.52), .55 + t*.012, .27);
+    col += uStone*.22 * sCirc(p, vec2(.20 + sin(t*.09)*.10, .70 - sc*2.0), .26, .28);
+    col += vec3(.13,.13,.12) * sBox(p, vec2(-.10, -.62 + sc*.9), vec2(.75,.10), .06, .13);
+  }
+  float g = hash(gl_FragCoord.xy*1.013 + vec2(fract(t*.7)*211., fract(t*.53)*97.));
+  col += (g - .5) * uGrain * (uLayer < .5 ? 1.0 : .35);
+  gl_FragColor = vec4(max(col, 0.), 1.);
+}`;
+    this.layers = [];
+    [['[data-bg]', 0], ['[data-fg]', 1]].forEach(([sel, layer]) => {
+      const cv = this.root.querySelector(sel);
+      if (!cv) return;
+      const gl = cv.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
+      if (!gl) { cv.style.display = 'none'; return; }
+      const mk = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const pr = gl.createProgram();
+      gl.attachShader(pr, mk(gl.VERTEX_SHADER, vs));
+      gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, fs));
+      gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.style.display = 'none'; return; }
+      gl.useProgram(pr);
+      const buf = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'p');
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      const u = n => gl.getUniformLocation(pr, n);
+      this.layers.push({ cv, gl, layer, u: { uRes: u('uRes'), uT: u('uT'), uScroll: u('uScroll'), uLayer: u('uLayer'), uGrain: u('uGrain'), uMetal: u('uMetal'), uStone: u('uStone') } });
+    });
+    this.resize();
+    const onR = () => this.resize();
+    addEventListener('resize', onR);
+    (this.cleanups = this.cleanups || []).push(() => removeEventListener('resize', onR));
+  }
+
+  hex2rgb(h) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(h || '');
+    if (!m) return [.21, .49, .40];
+    const n = parseInt(m[1], 16);
+    return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255];
+  }
+
+  resize() {
+    const fit = this.root && this.root.querySelector('[data-ring-fit]');
+    if (fit) {
+      const s = Math.max(.30, Math.min(1, Math.min(innerWidth / 1680, innerHeight / 1060)));
+      fit.style.transform = 'scale(' + s.toFixed(3) + ')';
+    }
+    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    (this.layers || []).forEach(L => {
+      const w = Math.max(1, Math.round(innerWidth * dpr)), h = Math.max(1, Math.round(innerHeight * dpr));
+      if (L.cv.width !== w || L.cv.height !== h) { L.cv.width = w; L.cv.height = h; }
+      L.gl.viewport(0, 0, w, h);
+    });
+  }
+
+  /* ---------- cursor + hover zones ---------- */
+  initPointer() {
+    const c = this.root.querySelector('[data-cursor]');
+    this.curEls = {
+      wrap: c,
+      dot: this.root.querySelector('[data-cur-dot]'),
+      ring: this.root.querySelector('[data-cur-ring]'),
+      plus: this.root.querySelector('[data-cur-plus]')
+    };
+    const onMove = e => {
+      this.mouse.x = e.clientX; this.mouse.y = e.clientY;
+      const el = document.elementFromPoint(e.clientX, e.clientY);
+      const onWork = !!(el && el.closest && el.closest('[data-work]'));
+      const inGallery = !!(el && el.closest && el.closest('[data-zone="gallery"]'));
+      this.setCursor(onWork ? 'work' : inGallery ? 'gallery' : 'idle');
+    };
+    const onLeave = () => { if (this.curEls.wrap) this.curEls.wrap.style.opacity = '0'; };
+    const onEnter = () => { if (this.curEls.wrap) this.curEls.wrap.style.opacity = '1'; };
+    addEventListener('pointermove', onMove, { passive: true });
+    document.addEventListener('pointerleave', onLeave);
+    document.addEventListener('pointerenter', onEnter);
+    const onScroll = () => { this.scroll = scrollY / Math.max(1, innerHeight); };
+    addEventListener('scroll', onScroll, { passive: true });
+    (this.cleanups = this.cleanups || []).push(() => {
+      removeEventListener('pointermove', onMove);
+      document.removeEventListener('pointerleave', onLeave);
+      document.removeEventListener('pointerenter', onEnter);
+      removeEventListener('scroll', onScroll);
+    });
+  }
+
+  setCursor(mode) {
+    if (this.curMode === mode || !this.curEls.dot) return;
+    this.curMode = mode;
+    const { dot, ring, plus } = this.curEls;
+    dot.style.opacity = mode === 'idle' ? '1' : '0';
+    ring.style.opacity = mode === 'gallery' ? '1' : '0';
+    ring.style.transform = mode === 'gallery' ? 'scale(1)' : 'scale(.4)';
+    plus.style.opacity = mode === 'work' ? '1' : '0';
+    plus.style.transform = mode === 'work' ? 'rotate(0deg) scale(1)' : 'rotate(-30deg) scale(.5)';
+  }
+
+  /* ---------- ring drag + inertia ---------- */
+  initRing() {
+    this.ring = this.root.querySelector('[data-ring]');
+    const zone = this.root.querySelector('[data-zone="gallery"]');
+    if (!zone) return;
+    const down = e => { this.drag = true; this.lastX = e.clientX; this.vel = 0; zone.setPointerCapture && zone.setPointerCapture(e.pointerId); };
+    const move = e => { if (!this.drag) return; const dx = e.clientX - this.lastX; this.lastX = e.clientX; this.vel = dx * .16; this.rot += dx * .16; };
+    const up = () => { this.drag = false; };
+    zone.addEventListener('pointerdown', down);
+    zone.addEventListener('pointermove', move);
+    zone.addEventListener('pointerup', up);
+    zone.addEventListener('pointercancel', up);
+    (this.cleanups = this.cleanups || []).push(() => {
+      zone.removeEventListener('pointerdown', down);
+      zone.removeEventListener('pointermove', move);
+      zone.removeEventListener('pointerup', up);
+      zone.removeEventListener('pointercancel', up);
+    });
+  }
+
+  /* ---------- GSAP scroll choreography ---------- */
+  waitGsap() {
+    let n = 0;
+    const go = () => {
+      if (window.gsap && window.ScrollTrigger) return this.initGsap();
+      if (++n > 60) return;
+      setTimeout(go, 100);
+    };
+    go();
+  }
+
+  initGsap() {
+    const { gsap, ScrollTrigger } = window;
+    gsap.registerPlugin(ScrollTrigger);
+    const q = s => this.root.querySelector(s);
+    gsap.to(q('[data-ring-wrap]'), {
+      y: -180, scale: .82, opacity: .12, ease: 'none',
+      scrollTrigger: { trigger: this.root.querySelector('section'), start: 'top top', end: 'bottom top', scrub: .6 }
+    });
+    gsap.to(q('[data-bigname]'), {
+      y: 170, letterSpacing: '.06em', ease: 'none',
+      scrollTrigger: { trigger: this.root.querySelector('section'), start: 'top top', end: 'bottom top', scrub: .8 }
+    });
+    gsap.to(q('[data-readout]'), {
+      y: 60, opacity: 0, ease: 'none',
+      scrollTrigger: { trigger: this.root.querySelector('section'), start: 'top top', end: '25% top', scrub: .4 }
+    });
+    const creep = q('[data-creep]');
+    if (creep) gsap.to(creep, { xPercent: -34, ease: 'none', scrollTrigger: { trigger: creep.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1.1 } });
+    this.root.querySelectorAll('[data-rv]').forEach(el => {
+      gsap.fromTo(el, { y: 74, opacity: 0, filter: 'blur(9px)' }, {
+        y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.25, ease: 'expo.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', once: true }
+      });
+    });
+  }
+
+  /* ---------- frame loop ---------- */
+  tick = (ts) => {
+    this.raf = requestAnimationFrame(this.tick);
+    const t = ts * .001;
+
+    // cursor easing
+    this.cur.x += (this.mouse.x - this.cur.x) * .22;
+    this.cur.y += (this.mouse.y - this.cur.y) * .22;
+    if (this.curEls && this.curEls.wrap) this.curEls.wrap.style.transform = `translate3d(${this.cur.x}px,${this.cur.y}px,0)`;
+
+    // ring rotation
+    if (!this.drag) { this.vel *= .945; this.rot += this.vel; }
+    if (this.props.autoRotate !== false && !this.drag && Math.abs(this.vel) < .06) this.rot += .045;
+    if (this.ring) this.ring.style.transform = `rotateX(-7deg) rotateY(${this.rot}deg)`;
+
+    // depth shading + front readout
+    let best = -2, bestEl = null;
+    const rad = Math.PI / 180;
+    for (let i = 0; i < this.works.length; i++) {
+      const el = this.works[i];
+      const a = (i * 24 + this.rot) * rad;
+      const f = Math.cos(a);
+      if (f > best) { best = f; bestEl = el; }
+      const n = .5 + .5 * f;
+      el.style.opacity = (.14 + .86 * Math.pow(n, 1.7)).toFixed(3);
+      const b = Math.round((1 - n) * 5);
+      if (this.blurCache[i] !== b) { this.blurCache[i] = b; el.style.filter = b ? `blur(${b}px)` : 'none'; }
+    }
+    if (bestEl && bestEl !== this.frontEl) {
+      this.frontEl = bestEl;
+      const d = bestEl.dataset, q = s => this.root.querySelector(s);
+      const idx = q('[data-ro-idx]'), ti = q('[data-ro-title]'), me = q('[data-ro-meta]'), dt = q('[data-ro-dot]');
+      if (idx) idx.textContent = String(d.i).padStart(2, '0') + ' / 15';
+      if (ti) ti.textContent = d.title;
+      if (me) me.textContent = `${d.material} · ${d.year} · ${d.dim}`;
+      if (dt) dt.style.background = this.accent(d.mat);
+    }
+
+    // shader uniforms
+    const grain = this.props.grain == null ? .085 : this.props.grain;
+    const M = this.hex2rgb(this.props.metalAccent || '#367C65');
+    const S = this.hex2rgb(this.props.stoneAccent || '#C15D3B');
+    (this.layers || []).forEach(L => {
+      const { gl, u } = L;
+      gl.uniform2f(u.uRes, L.cv.width, L.cv.height);
+      gl.uniform1f(u.uT, t);
+      gl.uniform1f(u.uScroll, this.scroll);
+      gl.uniform1f(u.uLayer, L.layer);
+      gl.uniform1f(u.uGrain, grain);
+      gl.uniform3f(u.uMetal, M[0], M[1], M[2]);
+      gl.uniform3f(u.uStone, S[0], S[1], S[2]);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    });
+  }
+
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin:0; padding:0; background:#141310; }
+  a { color:#EAEAEA; text-decoration:none; border-bottom:1px solid rgba(234,234,234,.25); }
+  a:hover { color:#C15D3B; border-bottom-color:#C15D3B; }
+  ::selection { background:#3A3733; color:#EAEAEA; }
+</style>
+</helmet>
+
+<div style="background:#141310; color:#EAEAEA; font-family:'Space Mono', ui-monospace, monospace; padding:70px 40px 120px;">
+
+  <header style="width:1440px; margin:0 auto 90px; display:flex; align-items:flex-end; justify-content:space-between; gap:50px; padding-bottom:20px; border-bottom:1px solid rgba(234,234,234,.2);">
+    <div>
+      <div style="font-family:Syne, sans-serif; font-weight:800; font-size:34px; letter-spacing:-.01em; line-height:1;">YÖNETİM PANELİ</div>
+      <div style="padding-top:12px; font-size:10px; letter-spacing:.26em; color:rgba(234,234,234,.42);">KESE BENAV — TEL KAFES v0.1 — 6 EKRAN</div>
+    </div>
+    <div style="display:flex; gap:34px; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); line-height:2;">
+      <div>
+        <div style="color:rgba(234,234,234,.28);">LEJANT</div>
+        <div>▢ GÖRSEL ALANI</div>
+        <div>▭ GİRDİ ALANI</div>
+      </div>
+      <div>
+        <div style="color:rgba(234,234,234,.28);">DURUM</div>
+        <div style="color:#C15D3B;">— BİRİNCİL EYLEM</div>
+        <div>— İKİNCİL / PASİF</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= A1 ================= -->
+  <section data-screen-label="A1 — Eser listesi" style="width:1440px; margin:0 auto 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; padding-bottom:14px;">
+      <span style="font-family:Syne, sans-serif; font-weight:800; font-size:20px;">A1</span>
+      <span style="font-size:11px; letter-spacing:.24em;">ESER LİSTESİ</span>
+      <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.32);">/admin/eserler — 1440×900</span>
+    </div>
+
+    <div style="border:1px solid rgba(234,234,234,.22); background:#1C1A17; display:grid; grid-template-columns:220px 1fr;">
+      <aside style="border-right:1px solid rgba(234,234,234,.16); padding:22px 0; display:flex; flex-direction:column; gap:2px;">
+        <div style="padding:0 20px 26px; font-size:10px; letter-spacing:.2em; color:rgba(234,234,234,.5);">KB / ARŞİV</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid #C15D3B; background:rgba(234,234,234,.045);">ESERLER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">GÖRSELLER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">ÇEMBER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">SERGİLER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">AYARLAR</div>
+        <div style="margin-top:auto; padding:20px; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.3);">K.BENAV — ÇIKIŞ</div>
+      </aside>
+
+      <main style="min-height:820px; display:flex; flex-direction:column;">
+        <div style="display:flex; align-items:center; gap:20px; padding:18px 26px; border-bottom:1px solid rgba(234,234,234,.16);">
+          <span style="font-size:10px; letter-spacing:.2em; color:rgba(234,234,234,.4);">ESERLER / TÜMÜ</span>
+          <span style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.28);">15 KAYIT · 15 YAYINDA</span>
+          <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.3);">SON KAYDETME 12:04</span>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:12px; padding:20px 26px;">
+          <div style="flex:0 0 300px; height:34px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 12px; font-size:10px; letter-spacing:.1em; color:rgba(234,234,234,.4);">⌕  BAŞLIK / MALZEME ARA</div>
+          <div style="display:flex; gap:8px;">
+            <div style="border:1px solid rgba(234,234,234,.35); padding:8px 12px; font-size:9px; letter-spacing:.16em;">TÜMÜ</div>
+            <div style="border:1px solid rgba(234,234,234,.16); padding:8px 12px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.42);">METAL</div>
+            <div style="border:1px solid rgba(234,234,234,.16); padding:8px 12px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.42);">TAŞ</div>
+            <div style="border:1px solid rgba(234,234,234,.16); padding:8px 12px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.42);">TASLAK</div>
+          </div>
+          <div style="margin-left:auto; display:flex; gap:10px;">
+            <div style="border:1px solid rgba(234,234,234,.22); padding:9px 14px; font-size:9px; letter-spacing:.18em; color:rgba(234,234,234,.6);">CSV DIŞA AKTAR</div>
+            <div style="border:1px solid #C15D3B; padding:9px 16px; font-size:9px; letter-spacing:.18em; color:#C15D3B;">+ YENİ ESER</div>
+          </div>
+        </div>
+
+        <div style="padding:0 26px 26px;">
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:0 12px 12px; border-bottom:1px solid rgba(234,234,234,.22); font-size:9px; letter-spacing:.18em; color:rgba(234,234,234,.38);">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.3);"></div>
+            <div>GÖRSEL</div><div>NO</div><div>BAŞLIK</div><div>MALZEME</div><div>YIL</div><div>ÖLÇÜ (CM)</div><div>ÇEMBER</div><div>DURUM</div><div></div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em;">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.3);"></div>
+            <div style="height:40px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px));"></div>
+            <div style="color:rgba(234,234,234,.45);">01</div><div>ÇÖZÜLME</div>
+            <div style="color:rgba(234,234,234,.6);">OKSİTLENMİŞ BAKIR</div><div style="color:rgba(234,234,234,.6);">2024</div><div style="color:rgba(234,234,234,.5);">240×90×90</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">POZ. 01</div>
+            <div style="font-size:9px; letter-spacing:.16em;">YAYINDA</div>
+            <div style="color:rgba(234,234,234,.4);">···</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em;">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.3);"></div>
+            <div style="height:40px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px));"></div>
+            <div style="color:rgba(234,234,234,.45);">02</div><div>KİRLİ AY</div>
+            <div style="color:rgba(234,234,234,.6);">BAZALT</div><div style="color:rgba(234,234,234,.6);">2023</div><div style="color:rgba(234,234,234,.5);">110×110×40</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">POZ. 02</div>
+            <div style="font-size:9px; letter-spacing:.16em;">YAYINDA</div>
+            <div style="color:rgba(234,234,234,.4);">···</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid rgba(234,234,234,.08); background:rgba(234,234,234,.03); font-size:10px; letter-spacing:.08em;">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.5); background:rgba(234,234,234,.25);"></div>
+            <div style="height:40px; border:1px solid rgba(234,234,234,.3); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.2) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.2) 50%, transparent calc(50% + .5px));"></div>
+            <div style="color:rgba(234,234,234,.45);">03</div><div>GÖVDE ÇALIŞMASI IV</div>
+            <div style="color:rgba(234,234,234,.6);">DÖVME ÇELİK</div><div style="color:rgba(234,234,234,.6);">2024</div><div style="color:rgba(234,234,234,.5);">190×70×60</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">POZ. 03</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:#C15D3B;">DÜZENLENİYOR</div>
+            <div style="color:rgba(234,234,234,.4);">···</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em;">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.3);"></div>
+            <div style="height:40px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px));"></div>
+            <div style="color:rgba(234,234,234,.45);">04</div><div>TUZ SÜTUNU</div>
+            <div style="color:rgba(234,234,234,.6);">TRAVERTEN</div><div style="color:rgba(234,234,234,.6);">2022</div><div style="color:rgba(234,234,234,.5);">300×55×55</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">POZ. 04</div>
+            <div style="font-size:9px; letter-spacing:.16em;">YAYINDA</div>
+            <div style="color:rgba(234,234,234,.4);">···</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em;">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.3);"></div>
+            <div style="height:40px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px));"></div>
+            <div style="color:rgba(234,234,234,.45);">05</div><div>ARTIK</div>
+            <div style="color:rgba(234,234,234,.6);">PİRİNÇ DÖKÜM</div><div style="color:rgba(234,234,234,.6);">2025</div><div style="color:rgba(234,234,234,.5);">85×120×80</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">POZ. 05</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.45);">TASLAK</div>
+            <div style="color:rgba(234,234,234,.4);">···</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em;">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.3);"></div>
+            <div style="height:40px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px));"></div>
+            <div style="color:rgba(234,234,234,.45);">06</div><div>SESSİZ KOVA</div>
+            <div style="color:rgba(234,234,234,.6);">ANDEZİT</div><div style="color:rgba(234,234,234,.6);">2021</div><div style="color:rgba(234,234,234,.5);">95×95×95</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">POZ. 06</div>
+            <div style="font-size:9px; letter-spacing:.16em;">YAYINDA</div>
+            <div style="color:rgba(234,234,234,.4);">···</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:26px 54px 40px 1fr 150px 60px 130px 78px 84px 30px; gap:14px; align-items:center; padding:13px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em;">
+            <div style="width:12px; height:12px; border:1px solid rgba(234,234,234,.3);"></div>
+            <div style="height:40px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.14) 50%, transparent calc(50% + .5px));"></div>
+            <div style="color:rgba(234,234,234,.45);">07</div><div>KIRIK EKSEN</div>
+            <div style="color:rgba(234,234,234,.6);">PASLANMAZ ÇELİK</div><div style="color:rgba(234,234,234,.6);">2025</div><div style="color:rgba(234,234,234,.5);">420×60×60</div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">POZ. 07</div>
+            <div style="font-size:9px; letter-spacing:.16em;">YAYINDA</div>
+            <div style="color:rgba(234,234,234,.4);">···</div>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:22px 12px 0; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4);">
+            <span>1—7 / 15 GÖSTERİLİYOR</span>
+            <div style="display:flex; gap:8px;">
+              <span style="border:1px solid rgba(234,234,234,.18); padding:7px 11px;">◄</span>
+              <span style="border:1px solid rgba(234,234,234,.4); padding:7px 11px; color:#EAEAEA;">1</span>
+              <span style="border:1px solid rgba(234,234,234,.18); padding:7px 11px;">2</span>
+              <span style="border:1px solid rgba(234,234,234,.18); padding:7px 11px;">►</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <ol data-note style="max-width:760px; margin:22px 0 0; padding-left:20px; font-size:10px; line-height:2; letter-spacing:.06em; color:rgba(234,234,234,.4);">
+      <li>Satır seçimi toplu eylem çubuğunu açar: yayınla, taslağa al, çemberden çıkar, sil.</li>
+      <li>“POZ. nn” değeri A4'teki çember sırasına bağlıdır; buradan doğrudan düzenlenemez.</li>
+      <li>Görseli olmayan eser yayınlanamaz — kaydetmede uyarı verilir.</li>
+    </ol>
+  </section>
+
+  <!-- ================= A2 ================= -->
+  <section data-screen-label="A2 — Eser ekle / düzenle" style="width:1440px; margin:0 auto 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; padding-bottom:14px;">
+      <span style="font-family:Syne, sans-serif; font-weight:800; font-size:20px;">A2</span>
+      <span style="font-size:11px; letter-spacing:.24em;">ESER EKLE / DÜZENLE</span>
+      <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.32);">/admin/eserler/03 — 1440×900</span>
+    </div>
+
+    <div style="border:1px solid rgba(234,234,234,.22); background:#1C1A17; display:grid; grid-template-columns:220px 1fr;">
+      <aside style="border-right:1px solid rgba(234,234,234,.16); padding:22px 0; display:flex; flex-direction:column; gap:2px;">
+        <div style="padding:0 20px 26px; font-size:10px; letter-spacing:.2em; color:rgba(234,234,234,.5);">KB / ARŞİV</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid #C15D3B; background:rgba(234,234,234,.045);">ESERLER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">GÖRSELLER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">ÇEMBER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">SERGİLER</div>
+        <div style="padding:11px 20px; font-size:10px; letter-spacing:.16em; border-left:2px solid transparent; color:rgba(234,234,234,.45);">AYARLAR</div>
+      </aside>
+
+      <main style="min-height:820px;">
+        <div style="display:flex; align-items:center; gap:16px; padding:18px 26px; border-bottom:1px solid rgba(234,234,234,.16);">
+          <span style="font-size:10px; letter-spacing:.2em; color:rgba(234,234,234,.4);">ESERLER / 03 — GÖVDE ÇALIŞMASI IV</span>
+          <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:#C15D3B;">KAYDEDİLMEMİŞ DEĞİŞİKLİK</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 340px;">
+          <div style="padding:30px 30px 40px; display:grid; gap:24px; border-right:1px solid rgba(234,234,234,.12);">
+            <div>
+              <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">BAŞLIK *</div>
+              <div style="height:38px; border:1px solid rgba(234,234,234,.28); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 12px; font-size:12px;">GÖVDE ÇALIŞMASI IV</div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+              <div>
+                <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">MALZEME SINIFI *</div>
+                <div style="display:flex; gap:8px;">
+                  <div style="flex:1; border:1px solid #EAEAEA; padding:10px 12px; font-size:10px; letter-spacing:.16em; display:flex; align-items:center; gap:9px;"><span style="width:9px; height:9px; border-radius:50%; background:#EAEAEA;"></span>METAL</div>
+                  <div style="flex:1; border:1px solid rgba(234,234,234,.2); padding:10px 12px; font-size:10px; letter-spacing:.16em; color:rgba(234,234,234,.45); display:flex; align-items:center; gap:9px;"><span style="width:9px; height:9px; border-radius:50%; border:1px solid rgba(234,234,234,.35);"></span>TAŞ</div>
+                </div>
+                <div style="padding-top:9px; font-size:9px; letter-spacing:.14em; color:rgba(234,234,234,.3);">→ SİTEDE VURGU RENGİNİ BELİRLER</div>
+              </div>
+              <div>
+                <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">MALZEME METNİ *</div>
+                <div style="height:38px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 12px; font-size:11px;">DÖVME ÇELİK</div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:100px 1fr; gap:20px;">
+              <div>
+                <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">YIL *</div>
+                <div style="height:38px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 12px; font-size:11px;">2024</div>
+              </div>
+              <div>
+                <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">ÖLÇÜLER (Y × G × D, CM)</div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <div style="flex:1; height:38px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 12px; font-size:11px;">190</div>
+                  <span style="color:rgba(234,234,234,.3);">×</span>
+                  <div style="flex:1; height:38px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 12px; font-size:11px;">70</div>
+                  <span style="color:rgba(234,234,234,.3);">×</span>
+                  <div style="flex:1; height:38px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 12px; font-size:11px;">60</div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">ESER NOTU (OPSİYONEL, MAKS. 400 KARAKTER)</div>
+              <div style="height:130px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); padding:12px; font-size:11px; line-height:1.9; color:rgba(234,234,234,.55);">Dövme sırasında üç kez çatladı. Çatlaklar kapatılmadı — çalışma bu haliyle bırakıldı.</div>
+              <div style="padding-top:8px; text-align:right; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.3);">97 / 400</div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+              <div>
+                <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">ETİKETLER</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; min-height:38px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); padding:8px;">
+                  <span style="border:1px solid rgba(234,234,234,.3); padding:5px 9px; font-size:9px; letter-spacing:.14em;">GÖVDE ×</span>
+                  <span style="border:1px solid rgba(234,234,234,.3); padding:5px 9px; font-size:9px; letter-spacing:.14em;">SERİ IV ×</span>
+                  <span style="padding:5px 4px; font-size:9px; color:rgba(234,234,234,.3);">EKLE…</span>
+                </div>
+              </div>
+              <div>
+                <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">KOLEKSİYON / SAHİPLİK</div>
+                <div style="height:38px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:11px; color:rgba(234,234,234,.5);"><span>SANATÇI KOLEKSİYONU</span><span>▾</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:30px 26px; display:grid; gap:24px; align-content:start;">
+            <div>
+              <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:10px;">BİRİNCİL GÖRSEL</div>
+              <div style="height:250px; border:1px solid rgba(234,234,234,.22); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px)); display:flex; align-items:flex-end; padding:12px;">
+                <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.45);">3:4 — 2400×3200</span>
+              </div>
+              <div style="display:flex; gap:8px; padding-top:10px;">
+                <div style="border:1px solid rgba(234,234,234,.25); padding:8px 12px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.6);">DEĞİŞTİR</div>
+                <div style="border:1px solid rgba(234,234,234,.25); padding:8px 12px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.6);">KIRP → A3</div>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid rgba(234,234,234,.14); padding-top:22px; display:grid; gap:16px;">
+              <div>
+                <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">DURUM</div>
+                <div style="height:36px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:10px; letter-spacing:.14em;"><span>TASLAK</span><span style="color:rgba(234,234,234,.4);">▾</span></div>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.5);">ÇEMBERDE GÖSTER</span>
+                <span style="width:34px; height:18px; border:1px solid rgba(234,234,234,.4); display:flex; align-items:center; justify-content:flex-end; padding:2px;"><span style="width:12px; height:12px; background:#EAEAEA;"></span></span>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.4);"><span>ÇEMBER POZİSYONU</span><span style="color:#EAEAEA;">03 / 15</span></div>
+            </div>
+
+            <div style="border-top:1px solid rgba(234,234,234,.14); padding-top:22px; display:flex; gap:10px;">
+              <div style="flex:1; border:1px solid #C15D3B; padding:11px; text-align:center; font-size:10px; letter-spacing:.18em; color:#C15D3B;">KAYDET</div>
+              <div style="border:1px solid rgba(234,234,234,.22); padding:11px 14px; font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.55);">İPTAL</div>
+            </div>
+            <div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.28); line-height:2;">SİL — GERİ ALINAMAZ</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <ol data-note style="max-width:760px; margin:22px 0 0; padding-left:20px; font-size:10px; line-height:2; letter-spacing:.06em; color:rgba(234,234,234,.4);">
+      <li>Malzeme sınıfı seçimi sitedeki vurgu rengini (metal / taş) otomatik atar; elle renk seçilmez.</li>
+      <li>“Çemberde göster” kapatıldığında eser arşivde kalır, ana sayfa çemberinden düşer ve pozisyonlar yeniden numaralanır.</li>
+    </ol>
+  </section>
+
+  <!-- ================= A3 ================= -->
+  <section data-screen-label="A3 — Görsel yükleme ve kırpma" style="width:1440px; margin:0 auto 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; padding-bottom:14px;">
+      <span style="font-family:Syne, sans-serif; font-weight:800; font-size:20px;">A3</span>
+      <span style="font-size:11px; letter-spacing:.24em;">GÖRSEL YÜKLEME &amp; KIRPMA</span>
+      <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.32);">MODAL — 1200×820</span>
+    </div>
+
+    <div style="border:1px solid rgba(234,234,234,.22); background:#1C1A17;">
+      <div style="display:flex; align-items:center; padding:18px 26px; border-bottom:1px solid rgba(234,234,234,.16); font-size:10px; letter-spacing:.2em;">
+        <span>GÖRSEL DÜZENLE — 03 GÖVDE ÇALIŞMASI IV</span>
+        <span style="margin-left:auto; color:rgba(234,234,234,.4);">✕</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns:250px 1fr 280px; min-height:640px;">
+        <div style="border-right:1px solid rgba(234,234,234,.12); padding:22px;">
+          <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:12px;">BU ESERİN GÖRSELLERİ (4)</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div style="aspect-ratio:3/4; border:1px solid #EAEAEA; background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.18) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.18) 50%, transparent calc(50% + .5px)); display:flex; align-items:flex-start; justify-content:flex-end; padding:5px;"><span style="font-size:8px; letter-spacing:.1em; background:#141310; padding:2px 4px;">ANA</span></div>
+            <div style="aspect-ratio:3/4; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.12) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.12) 50%, transparent calc(50% + .5px));"></div>
+            <div style="aspect-ratio:3/4; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.12) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.12) 50%, transparent calc(50% + .5px));"></div>
+            <div style="aspect-ratio:3/4; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.12) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.12) 50%, transparent calc(50% + .5px));"></div>
+          </div>
+          <div style="margin-top:14px; border:1px dashed rgba(234,234,234,.3); padding:22px 12px; text-align:center; font-size:9px; letter-spacing:.16em; line-height:2; color:rgba(234,234,234,.45);">DOSYA SÜRÜKLE<br>VEYA SEÇ<br><span style="color:rgba(234,234,234,.28);">JPG / TIFF — MAKS 40MB</span></div>
+        </div>
+
+        <div style="padding:26px; display:flex; flex-direction:column; gap:18px; background:rgba(0,0,0,.22);">
+          <div style="display:flex; gap:8px; font-size:9px; letter-spacing:.16em;">
+            <span style="border:1px solid #EAEAEA; padding:7px 11px;">3:4</span>
+            <span style="border:1px solid rgba(234,234,234,.18); padding:7px 11px; color:rgba(234,234,234,.45);">1:1</span>
+            <span style="border:1px solid rgba(234,234,234,.18); padding:7px 11px; color:rgba(234,234,234,.45);">16:9</span>
+            <span style="border:1px solid rgba(234,234,234,.18); padding:7px 11px; color:rgba(234,234,234,.45);">SERBEST</span>
+            <span style="margin-left:auto; border:1px solid rgba(234,234,234,.18); padding:7px 11px; color:rgba(234,234,234,.45);">↺ 90°</span>
+          </div>
+
+          <div style="position:relative; flex:1; min-height:430px; border:1px solid rgba(234,234,234,.1); display:flex; align-items:center; justify-content:center;">
+            <div style="position:relative; width:300px; height:400px; outline:1px solid #EAEAEA; background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px));">
+              <div style="position:absolute; inset:0; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);">
+                <div style="border-right:1px solid rgba(234,234,234,.16); border-bottom:1px solid rgba(234,234,234,.16);"></div><div style="border-right:1px solid rgba(234,234,234,.16); border-bottom:1px solid rgba(234,234,234,.16);"></div><div style="border-bottom:1px solid rgba(234,234,234,.16);"></div>
+                <div style="border-right:1px solid rgba(234,234,234,.16); border-bottom:1px solid rgba(234,234,234,.16);"></div><div style="border-right:1px solid rgba(234,234,234,.16); border-bottom:1px solid rgba(234,234,234,.16);"></div><div style="border-bottom:1px solid rgba(234,234,234,.16);"></div>
+                <div style="border-right:1px solid rgba(234,234,234,.16);"></div><div style="border-right:1px solid rgba(234,234,234,.16);"></div><div></div>
+              </div>
+              <div style="position:absolute; top:-4px; left:-4px; width:9px; height:9px; background:#EAEAEA;"></div>
+              <div style="position:absolute; top:-4px; right:-4px; width:9px; height:9px; background:#EAEAEA;"></div>
+              <div style="position:absolute; bottom:-4px; left:-4px; width:9px; height:9px; background:#EAEAEA;"></div>
+              <div style="position:absolute; bottom:-4px; right:-4px; width:9px; height:9px; background:#EAEAEA;"></div>
+            </div>
+            <div style="position:absolute; bottom:12px; left:14px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.35);">SÜRÜKLE — KONUMLA · SCROLL — ÖLÇEK</div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:16px;">
+            <span style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4);">ÖLÇEK</span>
+            <div style="flex:1; height:1px; background:rgba(234,234,234,.25); position:relative;"><span style="position:absolute; left:38%; top:-5px; width:11px; height:11px; background:#EAEAEA;"></span></div>
+            <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.55);">1.34×</span>
+          </div>
+        </div>
+
+        <div style="border-left:1px solid rgba(234,234,234,.12); padding:26px 22px; display:grid; gap:22px; align-content:start;">
+          <div>
+            <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">ALT METİN (ERİŞİLEBİLİRLİK) *</div>
+            <div style="height:76px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); padding:10px; font-size:10px; line-height:1.8; color:rgba(234,234,234,.5);">Dövme çelik gövde, üç yerinden çatlamış, atölye zemininde.</div>
+          </div>
+          <div style="display:grid; gap:9px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.42); line-height:1.8;">
+            <div style="display:flex; justify-content:space-between;"><span>KAYNAK</span><span style="color:#EAEAEA;">IMG_4471.TIF</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>BOYUT</span><span style="color:#EAEAEA;">6000 × 8000</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>ÇIKTI</span><span style="color:#EAEAEA;">2400 × 3200</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>AĞIRLIK</span><span style="color:#EAEAEA;">~ 380 KB (WEBP)</span></div>
+          </div>
+          <div style="border-top:1px solid rgba(234,234,234,.14); padding-top:18px; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.5);">ANA GÖRSEL YAP</span>
+            <span style="width:34px; height:18px; border:1px solid rgba(234,234,234,.4); display:flex; align-items:center; justify-content:flex-end; padding:2px;"><span style="width:12px; height:12px; background:#EAEAEA;"></span></span>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div style="flex:1; border:1px solid #C15D3B; padding:11px; text-align:center; font-size:10px; letter-spacing:.18em; color:#C15D3B;">KIRP &amp; KAYDET</div>
+            <div style="border:1px solid rgba(234,234,234,.22); padding:11px 14px; font-size:10px; letter-spacing:.18em; color:rgba(234,234,234,.55);">SIFIRLA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ol data-note style="max-width:760px; margin:22px 0 0; padding-left:20px; font-size:10px; line-height:2; letter-spacing:.06em; color:rgba(234,234,234,.4);">
+      <li>Çember kartları 3:4 kullanır; başka oran seçilirse kart içinde kırpma uyarısı çıkar.</li>
+      <li>Yükleme sırasında WEBP + 2× retina türevleri arka planda üretilir.</li>
+    </ol>
+  </section>
+
+  <!-- ================= A4 ================= -->
+  <section data-screen-label="A4 — Çember sıralaması" style="width:1440px; margin:0 auto 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; padding-bottom:14px;">
+      <span style="font-family:Syne, sans-serif; font-weight:800; font-size:20px;">A4</span>
+      <span style="font-size:11px; letter-spacing:.24em;">ÇEMBER SIRALAMASI</span>
+      <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.32);">/admin/cember — 1440×900</span>
+    </div>
+
+    <div style="border:1px solid rgba(234,234,234,.22); background:#1C1A17;">
+      <div style="display:flex; align-items:center; gap:20px; padding:18px 26px; border-bottom:1px solid rgba(234,234,234,.16);">
+        <span style="font-size:10px; letter-spacing:.2em;">ÇEMBER — 15 POZİSYON</span>
+        <span style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.3);">POZİSYON ARALIĞI 24°</span>
+        <div style="margin-left:auto; display:flex; gap:10px;">
+          <div style="border:1px solid rgba(234,234,234,.22); padding:9px 14px; font-size:9px; letter-spacing:.18em; color:rgba(234,234,234,.6);">EŞİT DAĞIT</div>
+          <div style="border:1px solid rgba(234,234,234,.22); padding:9px 14px; font-size:9px; letter-spacing:.18em; color:rgba(234,234,234,.6);">MALZEMEYE GÖRE ALMAŞIK</div>
+          <div style="border:1px solid #C15D3B; padding:9px 16px; font-size:9px; letter-spacing:.18em; color:#C15D3B;">SIRAYI YAYINLA</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 420px; min-height:660px;">
+        <div style="padding:26px; border-right:1px solid rgba(234,234,234,.12);">
+          <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:14px;">SÜRÜKLE — SIRALA</div>
+          <div style="display:grid; gap:7px;">
+            <div style="display:grid; grid-template-columns:24px 44px 34px 1fr 150px 70px 60px; gap:14px; align-items:center; border:1px solid rgba(234,234,234,.16); padding:9px 12px; font-size:10px; letter-spacing:.08em;">
+              <span style="color:rgba(234,234,234,.35);">⣿</span>
+              <span style="height:34px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px));"></span>
+              <span style="color:rgba(234,234,234,.45);">01</span><span>ÇÖZÜLME</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">OKS. BAKIR</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.4);">METAL</span>
+              <span style="font-size:9px; color:rgba(234,234,234,.35);">0°</span>
+            </div>
+            <div style="display:grid; grid-template-columns:24px 44px 34px 1fr 150px 70px 60px; gap:14px; align-items:center; border:1px solid rgba(234,234,234,.16); padding:9px 12px; font-size:10px; letter-spacing:.08em;">
+              <span style="color:rgba(234,234,234,.35);">⣿</span>
+              <span style="height:34px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px));"></span>
+              <span style="color:rgba(234,234,234,.45);">02</span><span>KİRLİ AY</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">BAZALT</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.4);">TAŞ</span>
+              <span style="font-size:9px; color:rgba(234,234,234,.35);">24°</span>
+            </div>
+            <div style="display:grid; grid-template-columns:24px 44px 34px 1fr 150px 70px 60px; gap:14px; align-items:center; border:1px dashed #C15D3B; padding:9px 12px; font-size:10px; letter-spacing:.08em; background:rgba(193,93,59,.07);">
+              <span style="color:#C15D3B;">⣿</span>
+              <span style="height:34px; border:1px solid rgba(234,234,234,.3); background-image:linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.2) 50%, transparent calc(50% + .5px));"></span>
+              <span style="color:rgba(234,234,234,.45);">03</span><span>GÖVDE ÇALIŞMASI IV</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">DÖVME ÇELİK</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.4);">METAL</span>
+              <span style="font-size:9px; color:#C15D3B;">48°</span>
+            </div>
+            <div style="height:2px; background:#C15D3B; margin:1px 0;"></div>
+            <div style="display:grid; grid-template-columns:24px 44px 34px 1fr 150px 70px 60px; gap:14px; align-items:center; border:1px solid rgba(234,234,234,.16); padding:9px 12px; font-size:10px; letter-spacing:.08em;">
+              <span style="color:rgba(234,234,234,.35);">⣿</span>
+              <span style="height:34px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px));"></span>
+              <span style="color:rgba(234,234,234,.45);">04</span><span>TUZ SÜTUNU</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">TRAVERTEN</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.4);">TAŞ</span>
+              <span style="font-size:9px; color:rgba(234,234,234,.35);">72°</span>
+            </div>
+            <div style="display:grid; grid-template-columns:24px 44px 34px 1fr 150px 70px 60px; gap:14px; align-items:center; border:1px solid rgba(234,234,234,.16); padding:9px 12px; font-size:10px; letter-spacing:.08em;">
+              <span style="color:rgba(234,234,234,.35);">⣿</span>
+              <span style="height:34px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px));"></span>
+              <span style="color:rgba(234,234,234,.45);">05</span><span>ARTIK</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">PİRİNÇ DÖKÜM</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.4);">METAL</span>
+              <span style="font-size:9px; color:rgba(234,234,234,.35);">96°</span>
+            </div>
+            <div style="display:grid; grid-template-columns:24px 44px 34px 1fr 150px 70px 60px; gap:14px; align-items:center; border:1px solid rgba(234,234,234,.16); padding:9px 12px; font-size:10px; letter-spacing:.08em; opacity:.45;">
+              <span style="color:rgba(234,234,234,.35);">⣿</span>
+              <span style="height:34px; border:1px solid rgba(234,234,234,.18); background-image:linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.13) 50%, transparent calc(50% + .5px));"></span>
+              <span style="color:rgba(234,234,234,.45);">06</span><span>SESSİZ KOVA</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.5);">ANDEZİT</span>
+              <span style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.4);">TAŞ</span>
+              <span style="font-size:9px; color:rgba(234,234,234,.35);">120°</span>
+            </div>
+            <div style="text-align:center; padding:14px 0 0; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.28);">⋮  07 — 15 ARASI 9 KAYIT</div>
+          </div>
+        </div>
+
+        <div style="padding:26px; display:flex; flex-direction:column; gap:22px;">
+          <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4);">ÜSTTEN GÖRÜNÜM — ÖNİZLEME</div>
+          <div style="position:relative; width:100%; aspect-ratio:1/1; border:1px solid rgba(234,234,234,.1);">
+            <div style="position:absolute; inset:14%; border:1px dashed rgba(234,234,234,.22); border-radius:50%;"></div>
+            <div style="position:absolute; top:50%; left:0; width:100%; height:1px; background:rgba(234,234,234,.08);"></div>
+            <div style="position:absolute; left:50%; top:0; height:100%; width:1px; background:rgba(234,234,234,.08);"></div>
+            <div style="position:absolute; top:50%; left:50%; width:9px; height:9px; margin:-4.5px 0 0 -4.5px; border:1px solid rgba(234,234,234,.5);"></div>
+            <div style="position:absolute; top:14%; left:50%; width:11px; height:11px; margin:-5.5px 0 0 -5.5px; background:#C15D3B;"></div>
+            <div style="position:absolute; top:50%; left:50%; width:1px; height:36%; background:rgba(193,93,59,.5); transform-origin:top; transform:rotate(180deg);"></div>
+            <div style="position:absolute; top:18.6%; left:73.5%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.55);"></div>
+            <div style="position:absolute; top:35%; left:84%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; top:58%; left:85%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; top:76%; left:74%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; top:86%; left:50%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; top:76%; left:26%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; top:58%; left:15%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; top:35%; left:16%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; top:18.6%; left:26.5%; width:8px; height:8px; margin:-4px; background:rgba(234,234,234,.4);"></div>
+            <div style="position:absolute; bottom:12px; left:14px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.35);">■ AÇILIŞTA ÖNDE OLAN POZİSYON</div>
+          </div>
+          <div style="display:grid; gap:12px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.42);">
+            <div style="display:flex; justify-content:space-between; align-items:center;"><span>AÇILIŞ POZİSYONU</span><span style="border:1px solid rgba(234,234,234,.2); padding:6px 10px; color:#EAEAEA;">01 ÇÖZÜLME ▾</span></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;"><span>OTOMATİK DÖNÜŞ</span><span style="width:34px; height:18px; border:1px solid rgba(234,234,234,.4); display:flex; align-items:center; justify-content:flex-end; padding:2px;"><span style="width:12px; height:12px; background:#EAEAEA;"></span></span></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;"><span>DÖNÜŞ HIZI</span><span style="color:#EAEAEA;">0.045 °/KARE</span></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;"><span>ÇEMBER YARIÇAPI</span><span style="color:#EAEAEA;">780 PX</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ol data-note style="max-width:760px; margin:22px 0 0; padding-left:20px; font-size:10px; line-height:2; letter-spacing:.06em; color:rgba(234,234,234,.4);">
+      <li>Sıra değişikliği taslak olarak tutulur; “Sırayı yayınla” denene kadar site etkilenmez.</li>
+      <li>Pozisyon açıları eser sayısına göre otomatik hesaplanır (360° ÷ n).</li>
+    </ol>
+  </section>
+
+  <!-- ================= A5 ================= -->
+  <section data-screen-label="A5 — Sergi kayıtları" style="width:1440px; margin:0 auto 120px;">
+    <div style="display:flex; align-items:baseline; gap:16px; padding-bottom:14px;">
+      <span style="font-family:Syne, sans-serif; font-weight:800; font-size:20px;">A5</span>
+      <span style="font-size:11px; letter-spacing:.24em;">SERGİ KAYITLARI</span>
+      <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.32);">/admin/sergiler — 1440×760</span>
+    </div>
+
+    <div style="border:1px solid rgba(234,234,234,.22); background:#1C1A17;">
+      <div style="display:flex; align-items:center; gap:20px; padding:18px 26px; border-bottom:1px solid rgba(234,234,234,.16);">
+        <span style="font-size:10px; letter-spacing:.2em;">SERGİLER</span>
+        <span style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.3);">11 KAYIT · 4 KİŞİSEL · 7 GRUP</span>
+        <div style="margin-left:auto; display:flex; gap:10px;">
+          <div style="border:1px solid rgba(234,234,234,.22); padding:9px 14px; font-size:9px; letter-spacing:.18em; color:rgba(234,234,234,.6);">CV OLARAK DIŞA AKTAR</div>
+          <div style="border:1px solid #C15D3B; padding:9px 16px; font-size:9px; letter-spacing:.18em; color:#C15D3B;">+ YENİ KAYIT</div>
+        </div>
+      </div>
+
+      <div style="padding:24px 26px 30px;">
+        <div style="display:grid; grid-template-columns:70px 1fr 220px 130px 100px 90px 30px; gap:16px; padding:0 12px 12px; border-bottom:1px solid rgba(234,234,234,.22); font-size:9px; letter-spacing:.18em; color:rgba(234,234,234,.38);">
+          <div>YIL</div><div>SERGİ</div><div>MEKAN</div><div>ŞEHİR</div><div>TÜR</div><div>ESER</div><div></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:70px 1fr 220px 130px 100px 90px 30px; gap:16px; padding:14px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em; align-items:center;">
+          <div>2026</div><div>KALINTI</div><div style="color:rgba(234,234,234,.6);">GALERİ HAM</div><div style="color:rgba(234,234,234,.6);">İSTANBUL</div><div style="font-size:9px; letter-spacing:.16em;">KİŞİSEL</div><div style="color:rgba(234,234,234,.5);">6</div><div style="color:rgba(234,234,234,.4);">···</div>
+        </div>
+        <div style="display:grid; grid-template-columns:70px 1fr 220px 130px 100px 90px 30px; gap:16px; padding:14px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em; align-items:center;">
+          <div>2025</div><div>AĞIR MALZEME</div><div style="color:rgba(234,234,234,.6);">SPUR PROJECTS</div><div style="color:rgba(234,234,234,.6);">BERLİN</div><div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.55);">GRUP</div><div style="color:rgba(234,234,234,.5);">3</div><div style="color:rgba(234,234,234,.4);">···</div>
+        </div>
+        <div style="display:grid; grid-template-columns:70px 1fr 220px 130px 100px 90px 30px; gap:16px; padding:14px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em; align-items:center;">
+          <div>2024</div><div>GÖVDE</div><div style="color:rgba(234,234,234,.6);">ARTER — 4. KAT</div><div style="color:rgba(234,234,234,.6);">İSTANBUL</div><div style="font-size:9px; letter-spacing:.16em;">KİŞİSEL</div><div style="color:rgba(234,234,234,.5);">9</div><div style="color:rgba(234,234,234,.4);">···</div>
+        </div>
+        <div style="display:grid; grid-template-columns:70px 1fr 220px 130px 100px 90px 30px; gap:16px; padding:14px 12px; border-bottom:1px solid rgba(234,234,234,.08); font-size:10px; letter-spacing:.08em; align-items:center;">
+          <div>2023</div><div>TOPRAK / DEMİR</div><div style="color:rgba(234,234,234,.6);">BAKSI MÜZESİ</div><div style="color:rgba(234,234,234,.6);">BAYBURT</div><div style="font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.55);">GRUP</div><div style="color:rgba(234,234,234,.5);">2</div><div style="color:rgba(234,234,234,.4);">···</div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:70px 1fr 220px 130px 100px 90px 30px; gap:16px; padding:12px; margin-top:14px; border:1px dashed rgba(234,234,234,.3); font-size:10px; align-items:center;">
+          <div style="height:32px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03);"></div>
+          <div style="height:32px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 10px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.3);">SERGİ ADI</div>
+          <div style="height:32px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03);"></div>
+          <div style="height:32px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03);"></div>
+          <div style="height:32px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; justify-content:space-between; padding:0 8px; font-size:9px; color:rgba(234,234,234,.35);"><span>TÜR</span><span>▾</span></div>
+          <div style="height:32px; border:1px solid rgba(234,234,234,.2); background:rgba(234,234,234,.03); display:flex; align-items:center; padding:0 8px; font-size:9px; color:rgba(234,234,234,.35);">ESER SEÇ</div>
+          <div style="font-size:9px; color:#C15D3B; letter-spacing:.1em;">↵</div>
+        </div>
+        <div style="padding-top:12px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.3);">SATIR İÇİ EKLEME — ENTER İLE KAYDET, ESC İLE VAZGEÇ</div>
+      </div>
+    </div>
+
+    <ol data-note style="max-width:760px; margin:22px 0 0; padding-left:20px; font-size:10px; line-height:2; letter-spacing:.06em; color:rgba(234,234,234,.4);">
+      <li>“Eser seç” alanı arşivden çoklu seçim yapar; sergi ile eser arasında iki yönlü bağ kurulur.</li>
+      <li>CV çıktısı yıl azalan sırayla, kişisel sergiler önce gruplanır.</li>
+    </ol>
+  </section>
+
+  <!-- ================= A6 ================= -->
+  <section data-screen-label="A6 — Site ayarları" style="width:1440px; margin:0 auto 40px;">
+    <div style="display:flex; align-items:baseline; gap:16px; padding-bottom:14px;">
+      <span style="font-family:Syne, sans-serif; font-weight:800; font-size:20px;">A6</span>
+      <span style="font-size:11px; letter-spacing:.24em;">SİTE AYARLARI — RENK &amp; TİPOGRAFİ</span>
+      <span style="margin-left:auto; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.32);">/admin/ayarlar — 1440×860</span>
+    </div>
+
+    <div style="border:1px solid rgba(234,234,234,.22); background:#1C1A17;">
+      <div style="display:flex; align-items:center; padding:18px 26px; border-bottom:1px solid rgba(234,234,234,.16); font-size:10px; letter-spacing:.2em;">
+        <span>AYARLAR</span>
+        <div style="margin-left:32px; display:flex; gap:22px; font-size:9px; letter-spacing:.18em;">
+          <span style="border-bottom:1px solid #C15D3B; padding-bottom:4px;">GÖRÜNÜM</span>
+          <span style="color:rgba(234,234,234,.4);">ÇEMBER</span>
+          <span style="color:rgba(234,234,234,.4);">SEO</span>
+          <span style="color:rgba(234,234,234,.4);">YEDEK</span>
+        </div>
+        <div style="margin-left:auto; display:flex; gap:10px;">
+          <div style="border:1px solid rgba(234,234,234,.22); padding:9px 14px; font-size:9px; letter-spacing:.18em; color:rgba(234,234,234,.6);">ÖNİZLE</div>
+          <div style="border:1px solid #C15D3B; padding:9px 16px; font-size:9px; letter-spacing:.18em; color:#C15D3B;">YAYINLA</div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 380px; min-height:600px;">
+        <div style="padding:28px; border-right:1px solid rgba(234,234,234,.12); display:grid; gap:20px; align-content:start;">
+          <div style="font-size:9px; letter-spacing:.22em; color:rgba(234,234,234,.4);">RENK JETONLARI</div>
+          <div style="display:grid; grid-template-columns:1fr 130px 34px; gap:12px; align-items:center; font-size:10px; letter-spacing:.1em;">
+            <span>ARKA PLAN (BETON)</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; padding:0 10px; color:rgba(234,234,234,.6);">#35322D</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.25);"></span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 130px 34px; gap:12px; align-items:center; font-size:10px; letter-spacing:.1em;">
+            <span>TİPOGRAFİ (KİRLİ BEYAZ)</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; padding:0 10px; color:rgba(234,234,234,.6);">#EAEAEA</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.25);"></span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 130px 34px; gap:12px; align-items:center; font-size:10px; letter-spacing:.1em;">
+            <span>DERİN ÇİKOLATA</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; padding:0 10px; color:rgba(234,234,234,.6);">#211A15</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.25);"></span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 130px 34px; gap:12px; align-items:center; font-size:10px; letter-spacing:.1em;">
+            <span>VURGU — METAL</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; padding:0 10px; color:rgba(234,234,234,.6);">#367C65</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.35);"></span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 130px 34px; gap:12px; align-items:center; font-size:10px; letter-spacing:.1em;">
+            <span>VURGU — TAŞ</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; padding:0 10px; color:rgba(234,234,234,.6);">#C15D3B</span>
+            <span style="height:32px; border:1px solid rgba(234,234,234,.35);"></span>
+          </div>
+          <div style="padding-top:6px; font-size:9px; letter-spacing:.14em; line-height:1.9; color:rgba(234,234,234,.3);">JETONLAR SİTE GENELİNDE UYGULANIR.<br>KONTRAST 4.5:1 ALTINA DÜŞERSE UYARI ÇIKAR.</div>
+        </div>
+
+        <div style="padding:28px; border-right:1px solid rgba(234,234,234,.12); display:grid; gap:22px; align-content:start;">
+          <div style="font-size:9px; letter-spacing:.22em; color:rgba(234,234,234,.4);">TİPOGRAFİ</div>
+          <div>
+            <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">BAŞLIK YAZI TİPİ</div>
+            <div style="height:34px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:11px;"><span>SYNE EXTRABOLD</span><span style="color:rgba(234,234,234,.4);">▾</span></div>
+          </div>
+          <div>
+            <div style="font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:8px;">DETAY / MONO YAZI TİPİ</div>
+            <div style="height:34px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; justify-content:space-between; padding:0 12px; font-size:11px;"><span>SPACE MONO</span><span style="color:rgba(234,234,234,.4);">▾</span></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:14px;"><span>BAŞLIK ÖLÇEĞİ</span><span style="color:#EAEAEA;">17.5 VW</span></div>
+            <div style="height:1px; background:rgba(234,234,234,.25); position:relative;"><span style="position:absolute; left:62%; top:-5px; width:11px; height:11px; background:#EAEAEA;"></span></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:14px;"><span>HARF ARALIĞI — DETAY</span><span style="color:#EAEAEA;">0.24 EM</span></div>
+            <div style="height:1px; background:rgba(234,234,234,.25); position:relative;"><span style="position:absolute; left:44%; top:-5px; width:11px; height:11px; background:#EAEAEA;"></span></div>
+          </div>
+          <div style="border-top:1px solid rgba(234,234,234,.14); padding-top:22px; display:grid; gap:18px;">
+            <div style="font-size:9px; letter-spacing:.22em; color:rgba(234,234,234,.4);">DOKU &amp; HAREKET</div>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.4); padding-bottom:14px;"><span>GREN YOĞUNLUĞU</span><span style="color:#EAEAEA;">0.085</span></div>
+              <div style="height:1px; background:rgba(234,234,234,.25); position:relative;"><span style="position:absolute; left:34%; top:-5px; width:11px; height:11px; background:#EAEAEA;"></span></div>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.45);"><span>KILAVUZ ÇİZGİLERİ</span><span style="width:34px; height:18px; border:1px solid rgba(234,234,234,.4); display:flex; align-items:center; justify-content:flex-end; padding:2px;"><span style="width:12px; height:12px; background:#EAEAEA;"></span></span></div>
+            <div style="display:flex; align-items:center; justify-content:space-between; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.45);"><span>ÖZEL İMLEÇ</span><span style="width:34px; height:18px; border:1px solid rgba(234,234,234,.4); display:flex; align-items:center; justify-content:flex-end; padding:2px;"><span style="width:12px; height:12px; background:#EAEAEA;"></span></span></div>
+            <div style="display:flex; align-items:center; justify-content:space-between; font-size:9px; letter-spacing:.2em; color:rgba(234,234,234,.45);"><span>AZALTILMIŞ HAREKET (SİSTEM)</span><span style="width:34px; height:18px; border:1px solid rgba(234,234,234,.2); display:flex; align-items:center; padding:2px;"><span style="width:12px; height:12px; background:rgba(234,234,234,.3);"></span></span></div>
+          </div>
+        </div>
+
+        <div style="padding:28px 26px; display:grid; gap:16px; align-content:start;">
+          <div style="font-size:9px; letter-spacing:.22em; color:rgba(234,234,234,.4);">CANLI ÖNİZLEME</div>
+          <div style="border:1px solid rgba(234,234,234,.18); aspect-ratio:16/10; position:relative; background-image:linear-gradient(to top right, transparent calc(50% - .5px), rgba(234,234,234,.07) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom right, transparent calc(50% - .5px), rgba(234,234,234,.07) 50%, transparent calc(50% + .5px));">
+            <div style="position:absolute; top:10px; left:12px; font-size:8px; letter-spacing:.2em; color:rgba(234,234,234,.5);">KESE BENAV</div>
+            <div style="position:absolute; top:10px; right:12px; font-size:8px; letter-spacing:.2em; color:rgba(234,234,234,.35);">ESERLER</div>
+            <div style="position:absolute; bottom:10px; left:12px; font-size:8px; letter-spacing:.2em; color:rgba(234,234,234,.35);">BİYOGRAFİ</div>
+            <div style="position:absolute; bottom:10px; right:12px; font-size:8px; letter-spacing:.2em; color:rgba(234,234,234,.35);">İLETİŞİM</div>
+            <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); display:flex; gap:6px; align-items:center;">
+              <span style="width:22px; height:30px; border:1px solid rgba(234,234,234,.22);"></span>
+              <span style="width:30px; height:40px; border:1px solid rgba(234,234,234,.45);"></span>
+              <span style="width:22px; height:30px; border:1px solid rgba(234,234,234,.22);"></span>
+            </div>
+          </div>
+          <div style="font-size:9px; letter-spacing:.16em; line-height:2; color:rgba(234,234,234,.35);">DEĞİŞİKLİKLER ÖNİZLEMEDE ANINDA GÖRÜNÜR.<br>YAYINLA DENMEDEN CANLI SİTEYE GİTMEZ.</div>
+          <div style="border-top:1px solid rgba(234,234,234,.14); padding-top:18px; display:grid; gap:10px; font-size:9px; letter-spacing:.16em; color:rgba(234,234,234,.42);">
+            <div style="display:flex; justify-content:space-between;"><span>SON YAYIN</span><span style="color:#EAEAEA;">18.08.26 — 22:41</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>SÜRÜM</span><span style="color:#EAEAEA;">v14</span></div>
+            <div style="padding-top:6px;">ÖNCEKİ SÜRÜME DÖN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ol data-note style="max-width:760px; margin:22px 0 0; padding-left:20px; font-size:10px; line-height:2; letter-spacing:.06em; color:rgba(234,234,234,.4);">
+      <li>Yazı tipi listesi yalnızca projeye yüklenmiş dosyalarla sınırlıdır — dışarıdan font eklenmez.</li>
+      <li>“Azaltılmış hareket” sistem tercihine bağlıdır; kapatılamaz, yalnızca gösterilir.</li>
+    </ol>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Tel kafes&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C15D3B&quot;,&quot;options&quot;:[&quot;#C15D3B&quot;,&quot;#367C65&quot;,&quot;#8A8378&quot;,&quot;#EAEAEA&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Tel kafes&quot;}}">
+class Component extends DCLogic {
+  componentDidMount() { this.sync(); }
+  componentDidUpdate() { this.sync(); }
+  sync() {
+    const show = this.props.showNotes !== false;
+    document.querySelectorAll('[data-note]').forEach(el => { el.style.display = show ? 'block' : 'none'; });
+    const a = this.props.accent;
+    if (!a) return;
+    document.querySelectorAll('*').forEach(el => {
+      const s = el.getAttribute('style') || '';
+      if (s.indexOf('#C15D3B') === -1) return;
+      if (/border(-left)?:1px (solid|dashed) #C15D3B/.test(s) || /border-bottom:1px solid #C15D3B/.test(s)) el.style.borderColor = a;
+      if (/color:#C15D3B/.test(s)) el.style.color = a;
+      if (/background:#C15D3B/.test(s)) el.style.background = a;
+    });
+  }
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

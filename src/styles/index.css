@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* tokens.js / applyTokens tarafından çalışma zamanında yeniden yazılır.
+       Her jeton iki biçimde durur: doğrudan CSS'te kullanılan hex ve Tailwind'in
+       /opaklık değiştiricisinin ihtiyaç duyduğu kanal üçlüsü. */
+    --kb-beton: #35322d;
+    --kb-ink: #eaeaea;
+    --kb-cikolata: #211a15;
+    --kb-metal: #367c65;
+    --kb-tas: #c15d3b;
+    --kb-beton-rgb: 53 50 45;
+    --kb-ink-rgb: 234 234 234;
+    --kb-cikolata-rgb: 33 26 21;
+    --kb-metal-rgb: 54 124 101;
+    --kb-tas-rgb: 193 93 59;
+    --kb-tracking-detay: 0.24em;
+    --kb-baslik-olcegi: 17.5vw;
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    margin: 0;
+    padding: 0;
+    background: var(--kb-beton);
+  }
+
+  body {
+    overflow-x: clip;
+    color: var(--kb-ink);
+    font-family: 'Space Mono', ui-monospace, SFMono-Regular, monospace;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: var(--kb-ink);
+    text-decoration: none;
+    border-bottom: 1px solid rgb(234 234 234 / 0.3);
+  }
+
+  a:hover {
+    color: var(--kb-tas);
+    border-bottom-color: var(--kb-tas);
+  }
+
+  ::selection {
+    background: var(--kb-metal);
+    color: var(--kb-ink);
+  }
+
+  /* Brütalist arayüz: yuvarlatma yok, sistem odak halkası yerine keskin çerçeve */
+  :focus-visible {
+    outline: 2px solid var(--kb-tas);
+    outline-offset: 2px;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border-radius: 0;
+  }
+
+  /* Özel imleç açıkken sistem imlecini gizle; klavye kullanıcısı etkilenmez */
+  [data-ozel-imlec='acik'],
+  [data-ozel-imlec='acik'] * {
+    cursor: none;
+  }
+}
+
+@layer components {
+  /* Tel kafesteki görsel alanı işareti — gerçek görsel yüklenene kadar */
+  .gorsel-yuvasi {
+    background-image:
+      linear-gradient(to top right, transparent calc(50% - 0.5px), rgb(234 234 234 / 0.14) 50%, transparent calc(50% + 0.5px)),
+      linear-gradient(to bottom right, transparent calc(50% - 0.5px), rgb(234 234 234 / 0.14) 50%, transparent calc(50% + 0.5px));
+  }
+}
+
+@keyframes kb-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes kb-creep {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

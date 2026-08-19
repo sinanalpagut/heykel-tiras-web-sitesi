@@ -1,0 +1,46 @@
+rules_version = '2';
+
+/**
+ * Kese Benav — Cloud Storage güvenlik kuralları.
+ *
+ * Storage'da yalnızca eser fotoğrafları durur ve hepsi yayınlanmak üzere
+ * yüklenir; bu yüzden okuma herkese açıktır. Yazma yetkisi Firestore'daki
+ * /yoneticiler/{uid} belgesine bağlıdır — Firestore kurallarıyla TEK ölçüt.
+ *
+ * Yol düzeni: eserler/{eserId}/{gorselId}
+ * (firebaseAdapter.gorselYukle bu yolu kurar; gorselId çakışmaz, bu yüzden
+ *  dosyalar sonsuz önbelleklenebilir olarak yüklenir.)
+ */
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Yetki ölçütü Firestore kurallarıyla AYNI belgeye bakar (çapraz servis
+    // kuralları). Tek kaynak olması önemli: yönetici yetkisi tek yerden verilip
+    // tek yerden alınır. Çapraz servis okuması kapalı bir projede bu satır
+    // request.auth.token.yonetici == true gibi bir özel talebe (custom claim)
+    // çevrilebilir — o durumda Firestore kuralları da aynı ölçüte geçmelidir.
+    function yoneticiMi() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/yoneticiler/$(request.auth.uid));
+    }
+
+    match /eserler/{eserId}/{gorselId} {
+      // Sitedeki <img> etiketleri oturumsuz okur.
+      allow read: if true;
+
+      // 40 MB üstü ve görsel olmayan içerik reddedilir. Panel zaten kırpılmış
+      // WebP üretir (~400 KB); bu sınır kazayla ham RAW/video yüklenmesine karşı.
+      allow create, update: if yoneticiMi()
+        && request.resource.size <= 40 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+
+      // Silmede request.resource yoktur; boyut/tür koşulu burada anlamsız olurdu.
+      allow delete: if yoneticiMi();
+    }
+
+    // Beklenmeyen yola yükleme yapılamasın.
+    match /{tumYollar=**} {
+      allow read, write: if false;
+    }
+  }
+}
