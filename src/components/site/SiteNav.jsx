@@ -33,6 +33,20 @@ export default function SiteNav({ kimlik, eserAdedi = 0, className = '' }) {
       aria-label="Site künyesi"
       className={`pointer-events-none fixed inset-0 z-nav text-mini uppercase tracking-detay ${className}`}
     >
+      {/*
+        Mobil künye zemini.
+        Şerit sabit olduğu için dar ekranda içerik altından kayıp geçiyor ve
+        künye okunmaz hale geliyordu. Zemini blok başına vermek denendi ama iki
+        kutu 375px'te tam ortada birleşip kaza gibi duran bir dikiş bırakıyordu;
+        bu yüzden tek parça. Renk ve bulanıklık okuma çubuğuyla aynı (%72
+        çikolata + 9px blur) — tasarımda zaten var olan dil. md ve üstünde
+        tamamen kalkar, künye tasarımdaki gibi doğrudan içeriğin üstünde durur.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-[84px] bg-[color-mix(in_srgb,var(--kb-cikolata,#211A15)_72%,transparent)] backdrop-blur-[9px] md:hidden"
+      />
+
       {/* Sol üst — kimlik */}
       <div className="pointer-events-auto absolute left-[30px] top-[26px]">
         <div className="font-display text-[19px] font-extrabold leading-none tracking-[.02em]">
