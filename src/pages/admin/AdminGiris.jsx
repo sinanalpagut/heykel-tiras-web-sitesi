@@ -46,12 +46,19 @@ export default function AdminGiris() {
   /* Başarılı girişte bileşen Navigate ile sökülür — sonrasında durum yazmayalım. */
   const bagliRef = useRef(true)
 
-  useEffect(
-    () => () => {
+  /*
+   * Bayrağı effect'in GÖVDESİNDE de true'ya çekmek şart. React geliştirme
+   * modunda bileşeni bağla → sök → yeniden bağla yapıyor; yalnızca temizlikte
+   * false yazsaydık (ilk yazımda öyleydi) ikinci bağlanmadan sonra bayrak
+   * kalıcı olarak false kalır, catch erken çıkar ve finally atlanırdı. Sonuç:
+   * parola yanlışken hiçbir hata görünmüyor, düğme "DENETLENİYOR…" kilitleniyordu.
+   */
+  useEffect(() => {
+    bagliRef.current = true
+    return () => {
       bagliRef.current = false
-    },
-    [],
-  )
+    }
+  }, [])
 
   /* Klavyeyle gelen kullanıcı ilk alanı fareyle aramasın. */
   useEffect(() => {

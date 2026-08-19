@@ -144,8 +144,11 @@ function ArsivSatiri({ sergi }) {
     <li className={`grid grid-cols-1 border-b border-ink/[0.08] py-4 ${IZGARA}`}>
       <div>
         <span className="text-detay tracking-genis text-ink/70">{sergi.yil}</span>
+        {/* Tarih damgası detay tipografisinden daha sıkışık: yıl sütunu 84px ve
+            tracking-genis ile "12 EYLÜL — 2 KASIM 2025" üç satıra, üstelik
+            tirenin sonunda kırılarak bölünüyordu. .06em'de iki satırda duruyor. */}
         {aralik && (
-          <span className="block pt-1 text-micro tracking-genis text-ink/35">{aralik}</span>
+          <span className="block pt-1 text-micro tracking-[.06em] text-ink/35">{aralik}</span>
         )}
       </div>
 

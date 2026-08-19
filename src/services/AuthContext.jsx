@@ -70,12 +70,12 @@ export function AuthSaglayici({ children }) {
         import('firebase/auth'),
       ])
       const auth = await authAl()
-      if (!auth) throw new Error('Firebase Auth yapılandırılmamış.')
+      if (!auth) throw new Error('FIREBASE AUTH YAPILANDIRILMAMIŞ.')
       await signInWithEmailAndPassword(auth, eposta, parola)
       return
     }
     if (parola !== YEREL_PAROLA) {
-      throw new Error('Parola hatalı.')
+      throw new Error('PAROLA HATALI.')
     }
     const u = { ad: eposta?.trim() || 'K.BENAV', kaynak: 'yerel' }
     setKullanici(u)

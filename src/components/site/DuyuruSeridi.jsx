@@ -119,10 +119,6 @@ export default function DuyuruSeridi({ sergi = null, className = '' }) {
   const yer = [sergi.mekan, sergi.sehir].filter(Boolean).join(' · ')
   const aralik = tarihAraligiMetni(sergi.baslangic, sergi.bitis)
   const kalan = geriSayim(sergi, simdi)
-  /* Geniş ekranda sağa yaslamayı yapan otomatik boşluk TEK bir öğede olmalı.
-     Sağ küme varsa yaslamayı o üstlenir, kapatma düğmesi peşinden gelir; küme
-     hiç basılmıyorsa (geri sayım da bağlantı da yoksa) görev düğmeye geçer. */
-  const sagKumeVar = Boolean(kalan || sergi.baglanti)
 
   return (
     <aside
@@ -132,12 +128,14 @@ export default function DuyuruSeridi({ sergi = null, className = '' }) {
     >
       {/*
         375px'te tek satır nowrap taşıyordu (okuma çubuğunda aynı hata yapılmıştı);
-        burada şerit baştan sarar. Kapatma düğmesi dar ekranda mutlak konumla sağ
-        üstte durur, sarma kaç satır sürerse sürsün erişilebilir kalsın diye —
-        sağdaki iç boşluk (pr) onun yerini peşinen ayırır, hiçbir metnin altına
-        girmez. md ve üstünde düğme akışa döner, satırın en sağında yer alır.
+        burada şerit her ölçüde sarabilir, hiçbir şey kesilmez.
+
+        Kapatma düğmesi akışın DIŞINDA, her ölçüde sağ üstte: akış içindeyken
+        768px'te satıra sığmayıp alt satırın soluna düşüyordu — kapat düğmesinin
+        yeri ekran genişliğine göre gezmemeli. Sağdaki iç boşluk (pr-[52px])
+        onun yerini peşinen ayırdığı için hiçbir metin altına girmez.
       */}
-      <div className="relative mx-auto flex max-w-icerik flex-wrap items-center gap-x-4 gap-y-1.5 py-3 pl-[30px] pr-[52px] md:pr-[30px]">
+      <div className="relative mx-auto flex max-w-icerik flex-wrap items-center gap-x-4 gap-y-1.5 py-3 pl-[30px] pr-[52px]">
         <span className="flex shrink-0 items-center gap-2">
           {/* Kare yalnızca renk taşır; aynı bilgi yanındaki etikette metin olarak da var */}
           <span
@@ -156,9 +154,7 @@ export default function DuyuruSeridi({ sergi = null, className = '' }) {
             setKapatma({ anahtar, kapali: true })
           }}
           aria-label="Duyuruyu kapat"
-          className={`absolute right-[22px] top-[9px] p-1.5 leading-none text-ink/40 transition-colors hover:text-tas md:static md:order-last ${
-            sagKumeVar ? '' : 'md:ml-auto'
-          }`}
+          className="absolute right-[22px] top-[9px] p-1.5 leading-none text-ink/40 transition-colors hover:text-tas"
         >
           <span aria-hidden="true" className="block text-detay leading-none">
             ✕
