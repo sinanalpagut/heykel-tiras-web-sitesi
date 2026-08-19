@@ -114,18 +114,74 @@ export const SUREC_KARELERI = [
   },
 ]
 
+const afisGorseli = (dosya, alt) => ({
+  id: `gorsel-afis-${dosya}`,
+  url: `/taslak/afis-${dosya}.svg`,
+  alt,
+  genislik: 900,
+  yukseklik: 1270,
+  kaynakAdi: `afis-${dosya}.svg`,
+  kaynakBayt: 0,
+  kirpma: null,
+  oran: 'serbest',
+  taslakMi: true,
+})
+
+/** Gün başlangıcı (yerel değil, UTC — tohum verinin sabit kalması için). */
+const g = (y, a, gun) => Date.UTC(y, a - 1, gun)
+
+const sergi = (id, yil, ad, mekan, sehir, tur, eserIdleri, ek = {}) => ({
+  id,
+  yil,
+  ad,
+  mekan,
+  sehir,
+  tur,
+  eserIdleri,
+  baslangic: null,
+  bitis: null,
+  aciklama: '',
+  afis: null,
+  baglanti: '',
+  ...ek,
+})
+
 export const SERGILER = [
-  { id: 'sergi-01', yil: 2026, ad: 'KALINTI', mekan: 'GALERİ HAM', sehir: 'İSTANBUL', tur: 'kisisel', eserIdleri: ['eser-01', 'eser-03', 'eser-07', 'eser-09', 'eser-11', 'eser-15'] },
-  { id: 'sergi-02', yil: 2025, ad: 'AĞIR MALZEME', mekan: 'SPUR PROJECTS', sehir: 'BERLİN', tur: 'grup', eserIdleri: ['eser-07', 'eser-11', 'eser-13'] },
-  { id: 'sergi-03', yil: 2024, ad: 'GÖVDE', mekan: 'ARTER — 4. KAT', sehir: 'İSTANBUL', tur: 'kisisel', eserIdleri: ['eser-01', 'eser-02', 'eser-03', 'eser-04', 'eser-05', 'eser-06', 'eser-08', 'eser-09', 'eser-10'] },
-  { id: 'sergi-04', yil: 2023, ad: 'TOPRAK / DEMİR', mekan: 'BAKSI MÜZESİ', sehir: 'BAYBURT', tur: 'grup', eserIdleri: ['eser-08', 'eser-10'] },
-  { id: 'sergi-05', yil: 2023, ad: 'DİRENÇ', mekan: 'PİLEVNELİ', sehir: 'İSTANBUL', tur: 'grup', eserIdleri: ['eser-02', 'eser-08'] },
-  { id: 'sergi-06', yil: 2022, ad: 'SÜTUN', mekan: 'GALERİ HAM', sehir: 'İSTANBUL', tur: 'kisisel', eserIdleri: ['eser-04', 'eser-12'] },
-  { id: 'sergi-07', yil: 2022, ad: 'KESİT', mekan: 'ODUNPAZARI MODERN', sehir: 'ESKİŞEHİR', tur: 'grup', eserIdleri: ['eser-04'] },
-  { id: 'sergi-08', yil: 2021, ad: 'YEDİ HEYKELTIRAŞ', mekan: 'MİLLİ REASÜRANS', sehir: 'İSTANBUL', tur: 'grup', eserIdleri: ['eser-06'] },
-  { id: 'sergi-09', yil: 2021, ad: 'ATÖLYE KAYITLARI', mekan: 'KEMANKEŞ 44/B', sehir: 'İSTANBUL', tur: 'kisisel', eserIdleri: ['eser-06', 'eser-10', 'eser-14'] },
-  { id: 'sergi-10', yil: 2020, ad: 'AĞIRLIK', mekan: 'SANATORIUM', sehir: 'İSTANBUL', tur: 'grup', eserIdleri: ['eser-10', 'eser-14'] },
-  { id: 'sergi-11', yil: 2019, ad: 'İLK TAŞ', mekan: 'KUAD GALERİ', sehir: 'İSTANBUL', tur: 'grup', eserIdleri: ['eser-14'] },
+  /*
+   * KALINTI, tohum verideki tek YAKLAŞAN sergidir; duyuru şeridi ve sergiler
+   * bölümündeki vurgulu kart bu kayıttan beslenir. Tarihi geçerse şerit
+   * kendiliğinden düşer — panelden yeni bir sergi tarihi girmek yeterlidir.
+   */
+  sergi('sergi-01', 2026, 'KALINTI', 'GALERİ HAM', 'İSTANBUL', 'kisisel',
+    ['eser-01', 'eser-03', 'eser-07', 'eser-09', 'eser-11', 'eser-15'], {
+      baslangic: g(2026, 10, 29),
+      bitis: g(2026, 12, 20),
+      aciklama:
+        'Altı yeni iş. Hepsi tamamlanmadan bırakıldı; sergi, bırakma anının kendisini konu ediyor.',
+      afis: afisGorseli('kalinti', 'KALINTI sergisinin afişi: koyu zemin üzerinde dövme çelik gövde ve sergi künyesi.'),
+      baglanti: 'https://galerihamm.example/kalinti',
+    }),
+  sergi('sergi-02', 2025, 'AĞIR MALZEME', 'SPUR PROJECTS', 'BERLİN', 'grup',
+    ['eser-07', 'eser-11', 'eser-13'], { baslangic: g(2025, 9, 12), bitis: g(2025, 11, 2) }),
+  sergi('sergi-03', 2024, 'GÖVDE', 'ARTER — 4. KAT', 'İSTANBUL', 'kisisel',
+    ['eser-01', 'eser-02', 'eser-03', 'eser-04', 'eser-05', 'eser-06', 'eser-08', 'eser-09', 'eser-10'],
+    { baslangic: g(2024, 3, 7), bitis: g(2024, 6, 16) }),
+  sergi('sergi-04', 2023, 'TOPRAK / DEMİR', 'BAKSI MÜZESİ', 'BAYBURT', 'grup',
+    ['eser-08', 'eser-10'], { baslangic: g(2023, 7, 1), bitis: g(2023, 9, 30) }),
+  sergi('sergi-05', 2023, 'DİRENÇ', 'PİLEVNELİ', 'İSTANBUL', 'grup',
+    ['eser-02', 'eser-08'], { baslangic: g(2023, 2, 9), bitis: g(2023, 4, 8) }),
+  sergi('sergi-06', 2022, 'SÜTUN', 'GALERİ HAM', 'İSTANBUL', 'kisisel',
+    ['eser-04', 'eser-12'], { baslangic: g(2022, 10, 6), bitis: g(2022, 12, 3) }),
+  sergi('sergi-07', 2022, 'KESİT', 'ODUNPAZARI MODERN', 'ESKİŞEHİR', 'grup',
+    ['eser-04'], { baslangic: g(2022, 4, 21), bitis: g(2022, 8, 28) }),
+  sergi('sergi-08', 2021, 'YEDİ HEYKELTIRAŞ', 'MİLLİ REASÜRANS', 'İSTANBUL', 'grup',
+    ['eser-06'], { baslangic: g(2021, 11, 4), bitis: g(2021, 12, 24) }),
+  sergi('sergi-09', 2021, 'ATÖLYE KAYITLARI', 'KEMANKEŞ 44/B', 'İSTANBUL', 'kisisel',
+    ['eser-06', 'eser-10', 'eser-14'], { baslangic: g(2021, 5, 15), bitis: g(2021, 6, 6) }),
+  sergi('sergi-10', 2020, 'AĞIRLIK', 'SANATORIUM', 'İSTANBUL', 'grup',
+    ['eser-10', 'eser-14'], { baslangic: g(2020, 9, 3), bitis: g(2020, 10, 24) }),
+  /* Tarihi girilmemiş eski kayıt — "tarihsiz" davranışının gerçek örneği. */
+  sergi('sergi-11', 2019, 'İLK TAŞ', 'KUAD GALERİ', 'İSTANBUL', 'grup', ['eser-14']),
 ]
 
 export const VARSAYILAN_AYARLAR = {
@@ -169,7 +225,7 @@ export function tohumDurum() {
   return {
     eserler: ESERLER.map((e) => ({ ...e, olculer: { ...e.olculer }, etiketler: [...e.etiketler], gorseller: e.gorseller.map((g) => ({ ...g })) })),
     surecKareleri: SUREC_KARELERI.map((s) => ({ ...s })),
-    sergiler: SERGILER.map((s) => ({ ...s, eserIdleri: [...s.eserIdleri] })),
+    sergiler: SERGILER.map((s) => ({ ...s, eserIdleri: [...s.eserIdleri], afis: s.afis ? { ...s.afis } : null })),
     ayarlar: structuredClone(VARSAYILAN_AYARLAR),
     yayinlar: [structuredClone(VARSAYILAN_YAYIN)],
   }

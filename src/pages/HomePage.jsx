@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useDepoVerisi } from '../services/DepoContext.jsx'
 import { applyTokens } from '../config/tokens.js'
+import { duyurulacakSergi } from '../data/schema.js'
 import useReducedMotion from '../hooks/useReducedMotion.js'
 import useGsapReveal, { useHeroKoreografi } from '../hooks/useGsapReveal.js'
 import ShaderArkaPlan from '../components/site/ShaderArkaPlan.jsx'
@@ -9,6 +10,8 @@ import OzelImlec from '../components/site/OzelImlec.jsx'
 import SiteNav from '../components/site/SiteNav.jsx'
 import SculptureGallery from '../components/site/SculptureGallery.jsx'
 import AtolyeBolumu from '../components/site/AtolyeBolumu.jsx'
+import DuyuruSeridi from '../components/site/DuyuruSeridi.jsx'
+import SergilerBolumu from '../components/site/SergilerBolumu.jsx'
 import Kolofon from '../components/site/Kolofon.jsx'
 import PerdeYukleniyor from '../components/common/PerdeYukleniyor.jsx'
 import HataKutusu from '../components/common/HataKutusu.jsx'
@@ -27,13 +30,14 @@ export default function HomePage() {
   const heroRef = useRef(null)
 
   const { veri, yukleniyor, hata } = useDepoVerisi(async (depo) => {
-    const [ayarlar, cemberSirasi, eserler, surecKareleri] = await Promise.all([
+    const [ayarlar, cemberSirasi, eserler, surecKareleri, sergiler] = await Promise.all([
       depo.yayindakiAyarlariGetir(),
       depo.yayindakiCemberSirasi(),
       depo.eserleriGetir(),
       depo.surecKareleriniGetir(),
+      depo.sergileriGetir(),
     ])
-    return { ayarlar, cemberSirasi, eserler, surecKareleri }
+    return { ayarlar, cemberSirasi, eserler, surecKareleri, sergiler }
   }, [])
 
   const ayarlar = veri?.ayarlar
@@ -62,6 +66,13 @@ export default function HomePage() {
     }
   }, [veri])
 
+  /*
+   * Duyurulacak sergi her render'da değil, veri değişince hesaplanır. Zaman
+   * bağımlı olduğu için (tarih geçince duyuru düşer) sayfa yenilendiğinde
+   * yeniden değerlendirilir — canlı bir sayaç kurmak bu ölçekte gereksiz.
+   */
+  const duyuru = useMemo(() => duyurulacakSergi(veri?.sergiler ?? []), [veri])
+
   useGsapReveal(sayfaRef, { kapali: hareketAzalt || yukleniyor })
   useHeroKoreografi(heroRef, { kapali: hareketAzalt || yukleniyor })
 
@@ -87,12 +98,16 @@ export default function HomePage() {
 
       <SiteNav kimlik={ayarlar?.kimlik} eserAdedi={arsiv.adet} />
 
+      <DuyuruSeridi sergi={duyuru} />
+
       <main>
         <div ref={heroRef}>
           <SculptureGallery eserler={cemberEserleri} ayarlar={ayarlar} />
         </div>
 
         <AtolyeBolumu kareler={veri?.surecKareleri ?? []} />
+
+        <SergilerBolumu sergiler={veri?.sergiler ?? []} eserler={veri?.eserler ?? []} />
       </main>
 
       <Kolofon

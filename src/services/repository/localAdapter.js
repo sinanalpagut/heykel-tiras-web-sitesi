@@ -9,7 +9,7 @@ import { tohumDurum, VARSAYILAN_AYARLAR } from '../../data/seed.js'
 import * as blob from '../storage/blobStore.js'
 
 const ANAHTAR = 'kese-benav/durum'
-const SEMA_SURUMU = 1
+const SEMA_SURUMU = 2
 
 const gecikme = Number(import.meta.env?.VITE_SAHTE_GECIKME ?? (import.meta.env?.DEV ? 180 : 0))
 const bekle = () => (gecikme > 0 ? new Promise((r) => setTimeout(r, gecikme)) : Promise.resolve())
@@ -30,9 +30,13 @@ function yukle() {
   if (ham) {
     try {
       const cozulen = JSON.parse(ham)
-      if (cozulen?.semaSurumu === SEMA_SURUMU && cozulen.durum) {
-        durum = cozulen.durum
-        return durum
+      if (cozulen?.durum) {
+        const gocmus = gocur(cozulen.durum, cozulen.semaSurumu ?? 0)
+        if (gocmus) {
+          durum = gocmus
+          if (cozulen.semaSurumu !== SEMA_SURUMU) kaydet()
+          return durum
+        }
       }
     } catch {
       /* bozuk kayıt — tohumla baştan başla */
@@ -41,6 +45,35 @@ function yukle() {
   durum = tohumDurum()
   kaydet()
   return durum
+}
+
+/**
+ * Şema göçü.
+ *
+ * Kullanıcının tarayıcısında zaten veri var; şema değişince hepsini silip tohuma
+ * dönmek girilmiş kayıtları yok ederdi. Bunun yerine eksik alanlar varsayılanla
+ * doldurulur. Tanınmayan (gelecekten gelen) bir sürüm görülürse null dönülür ve
+ * çağıran tohuma düşer — bilmediğimiz bir şekli tahminle onarmak daha kötü.
+ *
+ * v1 → v2: sergilere baslangic/bitis/aciklama/afis/baglanti eklendi.
+ */
+function gocur(d, surum) {
+  if (surum > SEMA_SURUMU) return null
+  let cikti = d
+  if (surum < 2) {
+    cikti = {
+      ...cikti,
+      sergiler: (cikti.sergiler || []).map((s) => ({
+        baslangic: null,
+        bitis: null,
+        aciklama: '',
+        afis: null,
+        baglanti: '',
+        ...s,
+      })),
+    }
+  }
+  return cikti
 }
 
 function kaydet() {
@@ -312,6 +345,58 @@ async function sergiSil(id) {
   })
 }
 
+/**
+ * Sergi afişi yükler. Eser görsellerinden ayrı tutuluyor çünkü sergi tek bir
+ * afiş taşır (galeri koleksiyonu değil) ve çember kartı gibi 3:4'e zorlanmaz.
+ * İkili veri yine blobStore'da; kayıtta yalnızca üstveri durur.
+ */
+async function afisYukle(sergiId, dosya, ustveri = {}) {
+  if (!(dosya instanceof Blob)) throw new DepoHatasi('Geçersiz dosya.', { kod: 'girdi' })
+  const gorselId = kimlikUret('afis')
+  await blob.yaz(gorselId, dosya)
+  const kayit = {
+    id: gorselId,
+    url: null,
+    alt: ustveri.alt || '',
+    genislik: ustveri.genislik || 0,
+    yukseklik: ustveri.yukseklik || 0,
+    kaynakAdi: ustveri.kaynakAdi || '',
+    kaynakBayt: dosya.size,
+    kirpma: ustveri.kirpma || null,
+    oran: ustveri.oran || 'serbest',
+  }
+  let sonuc = null
+  let eskiId = null
+  yaz((d) => {
+    const i = d.sergiler.findIndex((x) => x.id === sergiId)
+    if (i < 0) throw new DepoHatasi('Sergi bulunamadı.', { kod: 'yok' })
+    eskiId = d.sergiler[i].afis?.id ?? null
+    d.sergiler[i] = { ...d.sergiler[i], afis: kayit }
+    sonuc = d.sergiler[i]
+  })
+  // Bir sergi tek afiş taşır; yenisi gelince eskisinin ikili verisi boşa yer kaplamasın.
+  if (eskiId && eskiId !== gorselId) {
+    blob.urlBirak(eskiId)
+    await blob.sil(eskiId)
+  }
+  return kopya(sonuc)
+}
+
+async function afisSil(sergiId) {
+  await bekle()
+  let eskiId = null
+  yaz((d) => {
+    const i = d.sergiler.findIndex((x) => x.id === sergiId)
+    if (i < 0) throw new DepoHatasi('Sergi bulunamadı.', { kod: 'yok' })
+    eskiId = d.sergiler[i].afis?.id ?? null
+    d.sergiler[i] = { ...d.sergiler[i], afis: null }
+  })
+  if (eskiId) {
+    blob.urlBirak(eskiId)
+    await blob.sil(eskiId)
+  }
+}
+
 /* ---------- ayarlar & yayınlar ---------- */
 
 async function ayarlariGetir() {
@@ -428,6 +513,9 @@ async function gorselUrl(gorselId) {
   for (const s of d.surecKareleri) {
     if (s.gorsel?.id === gorselId && s.gorsel.url) return s.gorsel.url
   }
+  for (const s of d.sergiler) {
+    if (s.afis?.id === gorselId && s.afis.url) return s.afis.url
+  }
   return null
 }
 
@@ -485,6 +573,8 @@ export const yerelDepo = {
   sergiOlustur,
   sergiGuncelle,
   sergiSil,
+  afisYukle,
+  afisSil,
   ayarlariGetir,
   ayarlariKaydet,
   ayarlariYayinla,

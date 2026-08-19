@@ -31,7 +31,9 @@ export default function SiteNav({ kimlik, eserAdedi = 0, className = '' }) {
   return (
     <nav
       aria-label="Site künyesi"
-      className={`pointer-events-none fixed inset-0 z-nav text-mini uppercase tracking-detay ${className}`}
+      /* Duyuru şeridi varsa künye onun altından başlar; yoksa değişken 0px. */
+      style={{ top: 'var(--kb-duyuru-h, 0px)' }}
+      className={`pointer-events-none fixed inset-x-0 bottom-0 z-nav text-mini uppercase tracking-detay ${className}`}
     >
       {/*
         Mobil künye zemini.

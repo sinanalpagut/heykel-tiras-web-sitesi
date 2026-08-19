@@ -71,13 +71,133 @@ export const KOLEKSIYONLAR = Object.freeze([
 /**
  * @typedef {object} Sergi
  * @property {string} id
- * @property {number} yil
+ * @property {number} yil                    baslangic varsa ondan türetilir
  * @property {string} ad
  * @property {string} mekan
  * @property {string} sehir
  * @property {'kisisel'|'grup'} tur
  * @property {string[]} eserIdleri           Arşivle iki yönlü bağ
+ * @property {number|null} baslangic         epoch ms — yoksa sergi "tarihsiz" sayılır
+ * @property {number|null} bitis             epoch ms
+ * @property {string} aciklama               Duyuruda görünen kısa metin
+ * @property {Gorsel|null} afis
+ * @property {string} baglanti               Galeri sayfası vb. (http/https)
  */
+
+/** @typedef {'yaklasan'|'suruyor'|'gecmis'|'tarihsiz'} SergiDurumu */
+
+export const SERGI_DURUM_ETIKETLERI = Object.freeze({
+  yaklasan: 'YAKLAŞAN',
+  suruyor: 'SÜRÜYOR',
+  gecmis: 'SONA ERDİ',
+  tarihsiz: 'TARİH GİRİLMEDİ',
+})
+
+const GUN = 86400000
+
+/**
+ * Serginin zamana göre durumu.
+ *
+ * Tarihi olmayan kayıtlar (eski arşiv girdileri yalnızca yıl taşıyor) "tarihsiz"
+ * döner ve duyuruya hiç girmez — yılı geçmişte diye "sona erdi" demek yanlış
+ * olurdu, o kayıt için gün bilgisi hiç yok.
+ *
+ * @param {Sergi} sergi
+ * @param {number} [simdi] epoch ms
+ * @returns {SergiDurumu}
+ */
+export function sergiDurumu(sergi, simdi = Date.now()) {
+  if (!sergi?.baslangic) return 'tarihsiz'
+  if (simdi < sergi.baslangic) return 'yaklasan'
+  const son = sergi.bitis ?? sergi.baslangic + GUN
+  return simdi > son ? 'gecmis' : 'suruyor'
+}
+
+/**
+ * Sitede duyurulacak sergi: önce süren, yoksa en yakın gelecekteki.
+ * Birden çok varsa en erken başlayan seçilir.
+ */
+export function duyurulacakSergi(sergiler, simdi = Date.now()) {
+  const uygun = (sergiler || []).filter((s) => {
+    const d = sergiDurumu(s, simdi)
+    return d === 'suruyor' || d === 'yaklasan'
+  })
+  if (!uygun.length) return null
+  const suren = uygun.filter((s) => sergiDurumu(s, simdi) === 'suruyor')
+  const havuz = suren.length ? suren : uygun
+  return havuz.slice().sort((a, b) => a.baslangic - b.baslangic)[0]
+}
+
+const AYLAR = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK']
+
+/** 29.10.2026 → "29 EKİM 2026" */
+export function tarihMetni(ms, { yilGoster = true } = {}) {
+  if (!ms) return ''
+  const t = new Date(ms)
+  const g = t.getDate()
+  const a = AYLAR[t.getMonth()]
+  return yilGoster ? `${g} ${a} ${t.getFullYear()}` : `${g} ${a}`
+}
+
+/**
+ * "29 EKİM — 20 ARALIK 2026" biçiminde aralık.
+ * Aynı yıl içindeyse yıl yalnızca sonda yazılır; bitiş yoksa tek tarih döner.
+ */
+export function tarihAraligiMetni(baslangic, bitis) {
+  if (!baslangic) return ''
+  if (!bitis) return tarihMetni(baslangic)
+  const b = new Date(baslangic)
+  const s = new Date(bitis)
+  const ayniYil = b.getFullYear() === s.getFullYear()
+  return `${tarihMetni(baslangic, { yilGoster: !ayniYil })} — ${tarihMetni(bitis)}`
+}
+
+/** Duyuru şeridindeki geri sayım: "12 GÜN KALDI" / "BUGÜN AÇILIYOR" / "SON GÜN". */
+export function geriSayim(sergi, simdi = Date.now()) {
+  const d = sergiDurumu(sergi, simdi)
+  if (d === 'yaklasan') {
+    const gun = Math.ceil((sergi.baslangic - simdi) / GUN)
+    return gun <= 1 ? 'YARIN AÇILIYOR' : `${gun} GÜN KALDI`
+  }
+  if (d === 'suruyor' && sergi.bitis) {
+    const gun = Math.ceil((sergi.bitis - simdi) / GUN)
+    if (gun <= 0) return 'SON GÜN'
+    return gun === 1 ? 'SON GÜN' : `${gun} GÜN KALDI`
+  }
+  return ''
+}
+
+/** Boş bir sergi taslağı. */
+export function bosSergi() {
+  return {
+    id: '',
+    yil: new Date().getFullYear(),
+    ad: '',
+    mekan: '',
+    sehir: '',
+    tur: 'kisisel',
+    eserIdleri: [],
+    baslangic: null,
+    bitis: null,
+    aciklama: '',
+    afis: null,
+    baglanti: '',
+  }
+}
+
+/** Kaydetmeden önceki denetim; boş dizi dönerse kayıt geçerli. */
+export function sergiEngelleri(sergi) {
+  const e = []
+  if (!sergi.ad?.trim()) e.push('Sergi adı zorunlu.')
+  if (!sergi.mekan?.trim()) e.push('Mekan zorunlu.')
+  if (sergi.baslangic && sergi.bitis && sergi.bitis < sergi.baslangic) {
+    e.push('Bitiş tarihi başlangıçtan önce olamaz.')
+  }
+  if (sergi.baglanti && !/^https?:\/\//i.test(sergi.baglanti)) {
+    e.push('Bağlantı http:// veya https:// ile başlamalı.')
+  }
+  return e
+}
 
 /**
  * @typedef {object} SiteAyarlari
