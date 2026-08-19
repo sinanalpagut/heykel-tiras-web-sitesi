@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img">
+<title>SESSİZ KOVA — taslak görsel</title>
+<defs>
+<linearGradient id="duvar" x1=".2" y1="0" x2=".9" y2="1">
+      <stop offset="0" stop-color="#2b2721"/><stop offset=".5" stop-color="#1c1814"/>
+      <stop offset="1" stop-color="#0c0a08"/></linearGradient>
+<radialGradient id="hale" cx=".42" cy=".38" r=".62">
+      <stop offset="0" stop-color="#6d6459" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#6d6459" stop-opacity="0"/></radialGradient>
+<linearGradient id="yer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#181410"/><stop offset="1" stop-color="#080706"/></linearGradient>
+<radialGradient id="temas" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#000" stop-opacity=".88"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+<linearGradient id="isik" x1="0" y1=".1" x2="1" y2=".8">
+      <stop offset="0" stop-color="#9c9285"/><stop offset=".10" stop-color="#6a6156"/>
+      <stop offset=".26" stop-color="#3b352d"/><stop offset=".52" stop-color="#1d1915"/>
+      <stop offset="1" stop-color="#0a0807"/></linearGradient>
+<linearGradient id="bounce" x1="1" y1=".2" x2=".3" y2="1">
+      <stop offset="0" stop-color="#C15D3B" stop-opacity=".34"/>
+      <stop offset=".55" stop-color="#C15D3B" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#C15D3B" stop-opacity="0"/></linearGradient>
+<filter id="as6"><feTurbulence type="fractalNoise" baseFrequency="0.01"
+      numOctaves="4" seed="78" result="t"/>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="26" xChannelSelector="R" yChannelSelector="G"/></filter>
+<filter id="gr6" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="4" seed="42"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".9"/></feComponentTransfer></filter>
+<clipPath id="k6"><path d="M341.8,-310.0 L306.6,-210.4 L232.6,-141.0 L168.6,-78.0 L89.4,-34.7 L0.0,-14.7 L-90.8,-30.4 L-181.7,-59.9 L-227.7,-144.5 L-272.9,-221.3 L-305.9,-310.0 L-289.1,-403.9 L-254.5,-494.9 L-182.9,-561.8 L-97.8,-611.0 L-0.0,-583.6 L104.0,-630.2 L154.8,-523.1 L257.1,-496.8 L253.4,-392.3 Z"/></clipPath>
+</defs>
+<rect width="900" height="1200" fill="url(#duvar)"/>
+<rect width="900" height="1200" fill="url(#hale)"/>
+<rect y="1094" width="900" height="106" fill="url(#yer)"/>
+<g transform="translate(452.5,1094)">
+<ellipse cy="6" rx="558" ry="105" fill="url(#temas)"/>
+<g filter="url(#as6)">
+<path d="M341.8,-310.0 L306.6,-210.4 L232.6,-141.0 L168.6,-78.0 L89.4,-34.7 L0.0,-14.7 L-90.8,-30.4 L-181.7,-59.9 L-227.7,-144.5 L-272.9,-221.3 L-305.9,-310.0 L-289.1,-403.9 L-254.5,-494.9 L-182.9,-561.8 L-97.8,-611.0 L-0.0,-583.6 L104.0,-630.2 L154.8,-523.1 L257.1,-496.8 L253.4,-392.3 Z" fill="url(#isik)"/>
+<g clip-path="url(#k6)">
+<path d="M-1709.3,-453.7 L770.7,-1020.3 L770.7,620.0 L-1709.3,620.0 Z" fill="#ffffff" opacity="0.052"/>
+<path d="M-1850.3,-470.3 L629.7,-325.1 L629.7,620.0 L-1850.3,620.0 Z" fill="#000000" opacity="0.137"/>
+<path d="M-1384.4,-491.7 L1095.6,-831.3 L1095.6,620.0 L-1384.4,620.0 Z" fill="#000000" opacity="0.162"/>
+<rect x="-217" y="-620" width="868" height="620" fill="url(#bounce)"/>
+<path d="M184,-592 l89,1" stroke="#000" stroke-opacity="0.16" stroke-width="2.7" fill="none"/>
+<path d="M-40,-370 l74,14" stroke="#000" stroke-opacity="0.16" stroke-width="3.4" fill="none"/>
+<path d="M-312,-100 l-61,-32" stroke="#000" stroke-opacity="0.16" stroke-width="2.2" fill="none"/>
+<path d="M181,-510 l-32,1" stroke="#000" stroke-opacity="0.15" stroke-width="1.0" fill="none"/>
+<path d="M315,-310 l170,33" stroke="#000" stroke-opacity="0.28" stroke-width="2.9" fill="none"/>
+<path d="M266,-251 l175,-16" stroke="#000" stroke-opacity="0.17" stroke-width="2.8" fill="none"/>
+<path d="M2,-86 l-143,-4" stroke="#000" stroke-opacity="0.26" stroke-width="2.3" fill="none"/>
+<path d="M-241,-290 l21,29" stroke="#000" stroke-opacity="0.10" stroke-width="3.1" fill="none"/>
+<path d="M168,-74 l-81,6" stroke="#000" stroke-opacity="0.24" stroke-width="3.5" fill="none"/>
+<path d="M-137,-240 l131,-6" stroke="#000" stroke-opacity="0.23" stroke-width="2.9" fill="none"/>
+<path d="M138,-262 l-61,-19" stroke="#000" stroke-opacity="0.12" stroke-width="2.1" fill="none"/>
+<path d="M-273,-482 l-53,28" stroke="#000" stroke-opacity="0.14" stroke-width="3.0" fill="none"/>
+<path d="M280,-16 l87,19" stroke="#000" stroke-opacity="0.22" stroke-width="2.0" fill="none"/>
+<path d="M-114,-136 l9,-29" stroke="#000" stroke-opacity="0.23" stroke-width="2.4" fill="none"/>
+</g></g>
+</g>
+<rect width="900" height="1200" filter="url(#gr6)" opacity=".16" style="mix-blend-mode:overlay"/>
+</svg>

@@ -66,6 +66,23 @@ kurulumda ana pakete girmez.
 
 ---
 
+## Taslak görseller
+
+`public/taslak/` altında 15 eser + 5 süreç karesi vardır. Bunlar **yer tutucudur**, gerçek
+fotoğraf değildir: tasarımın paletinde (karanlık sahne, soldan tek yönlü ışık, malzeme rengi
+yalnızca gölge tarafında zayıf bir sekme) üretilmiş SVG'lerdir. Her eserin gerçek ölçüleri
+(y×g×d) siluete, malzeme sınıfı yüzey tonuna dönüşür — bu yüzden 15 kare birbirinin kopyası
+değildir. Toplam ~160 KB, dış bağımlılık yok.
+
+Amaçları arşivin boş görünmemesi. Gerçek fotoğraflar geldikçe yönetim panelinden tek tek
+değiştirilir: **A2 → BİRİNCİL GÖRSEL → DEĞİŞTİR**, ya da **GÖRSELLER** ekranından. Değiştirilen
+eserin taslak SVG'si artık kullanılmaz; hepsi değiştirildiğinde `public/taslak/` silinebilir.
+
+Kayıtlarda `taslakMi: true` alanıyla işaretlidirler ve ikili verileri yoktur — yalnızca statik
+dosya yolu taşırlar. `localAdapter.gorselUrl` önce IndexedDB'ye bakar, orada yoksa bu yola düşer.
+
+---
+
 ## Mimari
 
 ```

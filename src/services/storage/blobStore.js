@@ -59,7 +59,17 @@ function islem(vt, mod, isi) {
       reddet(h)
       return
     }
-    tx.oncomplete = () => cozumle(sonuc && sonuc.result !== undefined ? sonuc.result : sonuc)
+    tx.oncomplete = () => {
+      /*
+       * `isi` bir IDBRequest döndürür; değeri `result` alanındadır. Anahtar
+       * bulunamadığında `result` undefined olur — bunu "sonuç yok" saymazsak
+       * IDBRequest nesnesinin KENDİSİ çözülür ve truthy olduğu için çağıran
+       * onu Blob sanır (createObjectURL orada patlıyordu).
+       */
+      const idbIstegi = sonuc && typeof sonuc === 'object' && 'readyState' in sonuc
+      const deger = idbIstegi ? sonuc.result : sonuc
+      cozumle(deger === undefined ? null : deger)
+    }
     tx.onerror = () => reddet(tx.error)
     tx.onabort = () => reddet(tx.error)
   })
@@ -120,7 +130,8 @@ export async function urlAl(id) {
   if (!id) return null
   if (urlOnbellegi.has(id)) return urlOnbellegi.get(id)
   const blob = await oku(id)
-  if (!blob) return null
+  // Blob olmayan bir şey geldiyse (bozuk kayıt) sessizce yer tutucuya düşülür.
+  if (!(blob instanceof Blob)) return null
   const url = URL.createObjectURL(blob)
   urlOnbellegi.set(id, url)
   return url

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img">
+<title>ÇÖZÜLME — taslak görsel</title>
+<defs>
+<linearGradient id="duvar" x1=".2" y1="0" x2=".9" y2="1">
+      <stop offset="0" stop-color="#2b2721"/><stop offset=".5" stop-color="#1c1814"/>
+      <stop offset="1" stop-color="#0c0a08"/></linearGradient>
+<radialGradient id="hale" cx=".42" cy=".38" r=".62">
+      <stop offset="0" stop-color="#6d6459" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#6d6459" stop-opacity="0"/></radialGradient>
+<linearGradient id="yer" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#181410"/><stop offset="1" stop-color="#080706"/></linearGradient>
+<radialGradient id="temas" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#000" stop-opacity=".88"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+<linearGradient id="isik" x1="0" y1=".1" x2="1" y2=".8">
+      <stop offset="0" stop-color="#9c9285"/><stop offset=".10" stop-color="#6a6156"/>
+      <stop offset=".26" stop-color="#3b352d"/><stop offset=".52" stop-color="#1d1915"/>
+      <stop offset="1" stop-color="#0a0807"/></linearGradient>
+<linearGradient id="bounce" x1="1" y1=".2" x2=".3" y2="1">
+      <stop offset="0" stop-color="#367C65" stop-opacity=".34"/>
+      <stop offset=".55" stop-color="#367C65" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#367C65" stop-opacity="0"/></linearGradient>
+<filter id="as1"><feTurbulence type="fractalNoise" baseFrequency="0.026"
+      numOctaves="4" seed="13" result="t"/>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="13" xChannelSelector="R" yChannelSelector="G"/></filter>
+<filter id="gr1" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="4" seed="7"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope=".9"/></feComponentTransfer></filter>
+<clipPath id="k1"><path d="M-76.4,-0.0 L-92.6,-44.0 L-137.1,-88.0 L-128.1,-132.0 L-160.2,-176.0 L-152.7,-220.0 L-189.8,-264.0 L-180.2,-308.0 L-174.7,-352.0 L-179.3,-396.0 L-163.0,-440.0 L-136.3,-484.0 L-139.7,-528.0 L-143.8,-572.0 L-122.2,-616.0 L-116.3,-660.0 L-134.4,-704.0 L-70.5,-748.0 L-63.3,-792.0 L-61.1,-836.0 L-38.9,-880.0 L46.0,-880.0 L65.9,-836.0 L71.9,-792.0 L120.2,-748.0 L95.0,-704.0 L106.6,-660.0 L149.5,-616.0 L122.7,-572.0 L146.2,-528.0 L169.8,-484.0 L165.6,-440.0 L154.0,-396.0 L172.0,-352.0 L145.5,-308.0 L191.3,-264.0 L170.6,-220.0 L163.7,-176.0 L152.1,-132.0 L131.4,-88.0 L92.9,-44.0 L65.8,-0.0 Z"/></clipPath>
+</defs>
+<rect width="900" height="1200" fill="url(#duvar)"/>
+<rect width="900" height="1200" fill="url(#hale)"/>
+<rect y="1094" width="900" height="106" fill="url(#yer)"/>
+<g transform="translate(434.6,1094)">
+<ellipse cy="6" rx="297" ry="56" fill="url(#temas)"/>
+<g filter="url(#as1)">
+<path d="M-76.4,-0.0 L-92.6,-44.0 L-137.1,-88.0 L-128.1,-132.0 L-160.2,-176.0 L-152.7,-220.0 L-189.8,-264.0 L-180.2,-308.0 L-174.7,-352.0 L-179.3,-396.0 L-163.0,-440.0 L-136.3,-484.0 L-139.7,-528.0 L-143.8,-572.0 L-122.2,-616.0 L-116.3,-660.0 L-134.4,-704.0 L-70.5,-748.0 L-63.3,-792.0 L-61.1,-836.0 L-38.9,-880.0 L46.0,-880.0 L65.9,-836.0 L71.9,-792.0 L120.2,-748.0 L95.0,-704.0 L106.6,-660.0 L149.5,-616.0 L122.7,-572.0 L146.2,-528.0 L169.8,-484.0 L165.6,-440.0 L154.0,-396.0 L172.0,-352.0 L145.5,-308.0 L191.3,-264.0 L170.6,-220.0 L163.7,-176.0 L152.1,-132.0 L131.4,-88.0 L92.9,-44.0 L65.8,-0.0 Z" fill="url(#isik)"/>
+<g clip-path="url(#k1)">
+<path d="M-367.8,-729.7 L952.2,-1273.0 L952.2,880.0 L-367.8,880.0 Z" fill="#ffffff" opacity="0.043"/>
+<path d="M-733.9,-406.6 L586.1,-915.5 L586.1,880.0 L-733.9,880.0 Z" fill="#000000" opacity="0.147"/>
+<path d="M-800.6,-451.6 L519.4,179.9 L519.4,880.0 L-800.6,880.0 Z" fill="#000000" opacity="0.165"/>
+<rect x="-115" y="-880" width="462" height="880" fill="url(#bounce)"/>
+<path d="M50,-227 l-58,36" stroke="#000" stroke-opacity="0.25" stroke-width="2.9" fill="none"/>
+<path d="M56,-55 l69,19" stroke="#000" stroke-opacity="0.16" stroke-width="2.1" fill="none"/>
+<path d="M-44,-858 l-28,12" stroke="#000" stroke-opacity="0.13" stroke-width="3.3" fill="none"/>
+<path d="M-91,-728 l-9,7" stroke="#000" stroke-opacity="0.26" stroke-width="2.8" fill="none"/>
+<path d="M-38,-177 l31,52" stroke="#000" stroke-opacity="0.30" stroke-width="2.8" fill="none"/>
+<path d="M-26,-163 l-2,40" stroke="#000" stroke-opacity="0.30" stroke-width="2.5" fill="none"/>
+<path d="M10,-828 l19,-7" stroke="#000" stroke-opacity="0.21" stroke-width="1.8" fill="none"/>
+<path d="M157,-360 l-20,-40" stroke="#000" stroke-opacity="0.22" stroke-width="2.5" fill="none"/>
+<path d="M124,-257 l48,49" stroke="#000" stroke-opacity="0.16" stroke-width="2.9" fill="none"/>
+<path d="M136,-2 l-64,3" stroke="#000" stroke-opacity="0.19" stroke-width="3.2" fill="none"/>
+<path d="M-162,-36 l13,42" stroke="#000" stroke-opacity="0.14" stroke-width="2.1" fill="none"/>
+<path d="M164,-646 l-27,-4" stroke="#000" stroke-opacity="0.16" stroke-width="2.4" fill="none"/>
+<path d="M-128,-663 l89,-13" stroke="#000" stroke-opacity="0.25" stroke-width="3.0" fill="none"/>
+<path d="M-160,-777 l68,-7" stroke="#000" stroke-opacity="0.11" stroke-width="3.2" fill="none"/>
+</g></g>
+</g>
+<rect width="900" height="1200" filter="url(#gr1)" opacity=".16" style="mix-blend-mode:overlay"/>
+</svg>

@@ -408,6 +408,29 @@ async function yayindakiCemberSirasi() {
   return sirali
 }
 
+/**
+ * Bir görselin görüntülenebilir adresi.
+ *
+ * Yüklenen görsellerin ikili verisi IndexedDB'dedir ve object URL üretilir.
+ * Tohum verisiyle gelen taslak kareler ise public/taslak/ altında statik
+ * dosyalardır: ikili verileri yoktur, kayıtta doğrudan `url` alanı taşırlar.
+ * Bileşenler yalnızca görsel kimliği bildiği için ayrımı burada yapıyoruz.
+ */
+async function gorselUrl(gorselId) {
+  if (!gorselId) return null
+  const nesne = await blob.urlAl(gorselId)
+  if (nesne) return nesne
+  const d = yukle()
+  for (const e of d.eserler) {
+    const g = (e.gorseller || []).find((x) => x.id === gorselId)
+    if (g?.url) return g.url
+  }
+  for (const s of d.surecKareleri) {
+    if (s.gorsel?.id === gorselId && s.gorsel.url) return s.gorsel.url
+  }
+  return null
+}
+
 /* ---------- abonelik & bakım ---------- */
 
 function abone(dinleyici) {
@@ -469,7 +492,7 @@ export const yerelDepo = {
   yayinaDon,
   yayindakiAyarlariGetir,
   yayindakiCemberSirasi,
-  gorselUrl: blob.urlAl,
+  gorselUrl,
   gorselKalici: blob.kalici,
   abone,
   sifirla,
