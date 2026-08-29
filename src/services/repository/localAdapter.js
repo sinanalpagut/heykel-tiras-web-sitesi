@@ -5,11 +5,17 @@
  * (bkz. storage/blobStore.js) durur. Sözleşme services/repository/contract.js.
  */
 import { DepoHatasi, kimlikUret, sirayiYenidenNumarala } from './contract.js'
-import { tohumDurum, SERGILER as TOHUM_SERGILER, VARSAYILAN_AYARLAR } from '../../data/seed.js'
+import {
+  tohumDurum,
+  ESERLER as TOHUM_ESERLER,
+  SERGILER as TOHUM_SERGILER,
+  SUREC_KARELERI as TOHUM_SUREC,
+  VARSAYILAN_AYARLAR,
+} from '../../data/seed.js'
 import * as blob from '../storage/blobStore.js'
 
 const ANAHTAR = 'kese-benav/durum'
-const SEMA_SURUMU = 2
+const SEMA_SURUMU = 3
 
 const gecikme = Number(import.meta.env?.VITE_SAHTE_GECIKME ?? (import.meta.env?.DEV ? 180 : 0))
 const bekle = () => (gecikme > 0 ? new Promise((r) => setTimeout(r, gecikme)) : Promise.resolve())
@@ -85,6 +91,38 @@ function gocur(d, surum) {
       }),
     }
   }
+  if (surum < 3) {
+    /*
+     * v3'te tohum görselleri üretilmiş SVG'lerden gerçek atölye fotoğraflarına
+     * geçti. `taslakMi: true` tam olarak "bu kayıt yer tutucu, kullanıcı
+     * yüklemesi değil" demek; yalnızca öyle olanlar tazeleniyor. Panelden
+     * gerçek görsel yüklenmiş eserlere dokunulmuyor — onların ikili verisi
+     * IndexedDB'de duruyor ve üzerine yazmak veri kaybı olurdu.
+     */
+    const tohumEser = new Map(TOHUM_ESERLER.map((e) => [e.id, e]))
+    const tohumSurec = new Map(TOHUM_SUREC.map((s) => [s.id, s]))
+    const hepsiTaslak = (gorseller) =>
+      Array.isArray(gorseller) && gorseller.length > 0 && gorseller.every((g) => g.taslakMi)
+
+    cikti = {
+      ...cikti,
+      eserler: (cikti.eserler || []).map((e) => {
+        const t = tohumEser.get(e.id)
+        if (!t || !hepsiTaslak(e.gorseller)) return e
+        return {
+          ...e,
+          gorseller: t.gorseller.map((g) => ({ ...g })),
+          anaGorselId: t.anaGorselId,
+        }
+      }),
+      surecKareleri: (cikti.surecKareleri || []).map((k) => {
+        const t = tohumSurec.get(k.id)
+        if (!t || !k.gorsel?.taslakMi) return k
+        return { ...k, gorsel: { ...t.gorsel } }
+      }),
+    }
+  }
+
   return cikti
 }
 

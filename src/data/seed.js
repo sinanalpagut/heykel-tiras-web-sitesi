@@ -8,41 +8,48 @@ import { VARSAYILAN_JETONLAR, VARSAYILAN_TIPOGRAFI, VARSAYILAN_DOKU, CEMBER } fr
 const T0 = Date.UTC(2026, 7, 18, 19, 41) // 18.08.26 22:41 TRT — A6'daki son yayın anı
 
 /**
- * Taslak görseller: public/taslak/ altında, tasarımın paletinde üretilmiş SVG
- * kareler. Amaç arşivin boş görünmemesi — her biri yönetim panelinden gerçek
- * fotoğrafla değiştirilebilir. İkili veri yok, yalnızca statik dosya yolu var;
- * localAdapter.gorselUrl bu alanı okur.
+ * Gerçek heykel fotoğrafları (public/foto/), sanatçının atölyesinden.
+ *
+ * Eser başlıkları, malzemeleri ve ölçüleri kurgusal arşivden geliyor;
+ * fotoğraflar gerçek. İkisi birebir örtüşmez — bilinçli bir demo tercihi.
+ * Alt metinler İSTİSNA: fotoğrafta gerçekten ne olduğunu anlatmak zorundalar,
+ * yoksa ekran okuyucu kullanan biri yanlış bilgilendirilir.
+ *
+ * 8 fotoğraf 15 esere dağıtılıyor; sıra, aynı karenin çemberde yan yana iki
+ * pozisyonda çıkmayacağı biçimde kaydırıldı.
  */
-const ALT_METINLER = {
-  1: 'Oksitlenmiş bakır gövde, yüzeyi çözülmüş, karanlık atölyede yandan ışıkla.',
-  2: 'Bazalttan yontulmuş dairesel kütle, bir kenarından kopmuş.',
-  3: 'Dövme çelik gövde, üç yerinden çatlamış, atölye zemininde.',
-  4: 'Traverten sütun, yüzeyi aşınmış, tavana doğru incelerek yükseliyor.',
-  5: 'Pirinç döküm parça, kalıptan çıkmış haliyle, üst üste binmiş kütleler.',
-  6: 'Andezitten oyulmuş kapalı kova biçimi, karanlıkta duran ağır kütle.',
-  7: 'Paslanmaz çelik uzun eksen, ortasından kırılıp kaymış.',
-  8: 'Pişmiş kilden geniş anıt kütlesi, yüzeyi çatlamış.',
-  9: 'Kurşun kütle, tavandan inen halatla asılı duruyor.',
-  10: 'Mermer artığı blok, tepeden aşağı inen derin bir yarıkla ikiye ayrılmış.',
-  11: 'Hurda demirden kurulmuş iskele yapısı, üst üste binen taşıyıcılar.',
-  12: 'Kireçtaşından alçak kabuk biçimi, zeminde yatay olarak duruyor.',
-  13: 'Bakır alaşımlı ince çengel, halattan sarkıyor.',
-  14: 'Granitten yatık taş kütlesi, zemine yayılmış.',
-  15: 'Beton ve çelikten büyük kalıntı kütlesi, yüzeyi dökülmüş.',
+const FOTOGRAFLAR = {
+  'bronz-kollar': 'Yeşil patinalı bronz figür, kolları iki yana açık, kayrak bir taban üzerinde, koyu zemin önünde.',
+  'ikili-figur': 'İki koyu bronz figür: biri öne eğilmiş ayakta, diğeri yere paralel uzanmış; atölye zemininde.',
+  'blok-govde': 'Gövdesi blok dokulu büyük figür, atölyede yükseltilmiş bir platform üzerinde ayakta.',
+  'alci-figur': 'Alçı figür, kolları yukarı açık, küçük bir kaide üzerinde, duvarın önünde.',
+  'seritli-bronz': 'Şerit biçimli bantlarla sarılmış patinalı bronz figür, atölye köşesinde.',
+  'ceketli-bust': 'Ceketli bir figürün büstü, kollarının arasında bir küre; arkada başka büstler ve kaideler.',
+  'seritli-bronz-2': 'Şeritlerle sarılmış bronz figür yandan; yanında alçı bir baş ve kurutulmuş bitkiler.',
+  'atolye-ic': 'Atölyenin içi: yaldızlı ayakta bir figür, vantilatör, raflarda çalışmalar ve tezgâh.',
 }
 
-const taslakGorsel = (i, baslik) => ({
-  id: `gorsel-tohum-${String(i).padStart(2, '0')}`,
-  url: `/taslak/eser-${String(i).padStart(2, '0')}.svg`,
-  alt: ALT_METINLER[i] || `${baslik} — taslak görsel`,
-  genislik: 900,
-  yukseklik: 1200,
-  kaynakAdi: `eser-${String(i).padStart(2, '0')}.svg`,
-  kaynakBayt: 0,
-  kirpma: null,
-  oran: '3:4',
-  taslakMi: true,
-})
+const ESER_FOTOGRAFI = [
+  'bronz-kollar', 'ikili-figur', 'blok-govde', 'alci-figur', 'seritli-bronz',
+  'ceketli-bust', 'atolye-ic', 'bronz-kollar', 'ikili-figur', 'blok-govde',
+  'alci-figur', 'seritli-bronz-2', 'ceketli-bust', 'atolye-ic', 'blok-govde',
+]
+
+const taslakGorsel = (i) => {
+  const ad = ESER_FOTOGRAFI[i - 1]
+  return {
+    id: `gorsel-foto-${String(i).padStart(2, '0')}`,
+    url: `/foto/${ad}.webp`,
+    alt: FOTOGRAFLAR[ad],
+    genislik: 1020,
+    yukseklik: 1360,
+    kaynakAdi: `${ad}.webp`,
+    kaynakBayt: 0,
+    kirpma: null,
+    oran: '3:4',
+    taslakMi: true,
+  }
+}
 
 const eser = (i, baslik, malzemeSinifi, malzeme, yil, [y, g, d], ek = {}) => ({
   id: `eser-${String(i).padStart(2, '0')}`,
@@ -57,8 +64,8 @@ const eser = (i, baslik, malzemeSinifi, malzeme, yil, [y, g, d], ek = {}) => ({
   durum: 'yayinda',
   cemberde: true,
   sira: i - 1,
-  gorseller: [taslakGorsel(i, baslik)],
-  anaGorselId: `gorsel-tohum-${String(i).padStart(2, '0')}`,
+  gorseller: [taslakGorsel(i)],
+  anaGorselId: `gorsel-foto-${String(i).padStart(2, '0')}`,
   olusturuldu: T0 - (16 - i) * 86400000,
   guncellendi: T0 - (16 - i) * 3600000,
   ...ek,
@@ -87,11 +94,11 @@ export const ESERLER = [
 
 const surecGorseli = (i, alt, genislik, yukseklik) => ({
   id: `gorsel-surec-${String(i).padStart(2, '0')}`,
-  url: `/taslak/surec-${String(i).padStart(2, '0')}.svg`,
+  url: `/foto/surec-${String(i).padStart(2, '0')}.webp`,
   alt,
   genislik,
   yukseklik,
-  kaynakAdi: `surec-${String(i).padStart(2, '0')}.svg`,
+  kaynakAdi: `surec-${String(i).padStart(2, '0')}.webp`,
   kaynakBayt: 0,
   kirpma: null,
   oran: 'serbest',
@@ -99,17 +106,17 @@ const surecGorseli = (i, alt, genislik, yukseklik) => ({
 })
 
 export const SUREC_KARELERI = [
-  { id: 'surec-01', kod: 'P.01', baslik: 'KALIP AÇMA', sagBilgi: '04:12', sagVurgu: 'tas', gorsel: surecGorseli(1, 'Açılmış kalıp yarımları, tezgâhın üzerinde.', 800, 1120), sira: 0 },
-  { id: 'surec-02', kod: 'P.02', baslik: 'BAKIR DÖKÜM', sagBilgi: '21:40', sagVurgu: 'metal', gorsel: surecGorseli(2, 'Potadan akan erimiş bakır, karanlık atölyede kıvılcımlarla.', 900, 1000), sira: 1 },
-  { id: 'surec-03', kod: 'P.03', baslik: 'TALAŞ', sagBilgi: null, sagVurgu: null, gorsel: surecGorseli(3, 'Atölye zeminine dağılmış metal talaşı, yakın plan.', 720, 720), sira: 2 },
-  { id: 'surec-04', kod: 'P.04', baslik: 'AŞINDIRMA', sagBilgi: '09:03', sagVurgu: 'tas', gorsel: surecGorseli(4, 'Taşlanmış taş yüzeyi, aşındırma izleriyle, yakın plan.', 800, 900), sira: 3 },
+  { id: 'surec-01', kod: 'P.01', baslik: 'KALIP AÇMA', sagBilgi: '04:12', sagVurgu: 'tas', gorsel: surecGorseli(1, 'Kaideler üzerinde büstler; öndeki ceketli figür tamamlanmış, arkadakiler sırada.', 1100, 1375), sira: 0 },
+  { id: 'surec-02', kod: 'P.02', baslik: 'BAKIR DÖKÜM', sagBilgi: '21:40', sagVurgu: 'metal', gorsel: surecGorseli(2, 'Şeritlerle sarılmış patinalı bronz figür, atölye köşesinde, yanında alçı bir baş.', 1100, 1375), sira: 1 },
+  { id: 'surec-03', kod: 'P.03', baslik: 'TALAŞ', sagBilgi: null, sagVurgu: null, gorsel: surecGorseli(3, 'Alçı figür, zeminde alçı tozu ve iş izleri arasında.', 1100, 1375), sira: 2 },
+  { id: 'surec-04', kod: 'P.04', baslik: 'AŞINDIRMA', sagBilgi: '09:03', sagVurgu: 'tas', gorsel: surecGorseli(4, 'Blok dokulu gövdeli figür, atölyede platform üzerinde ayakta.', 1100, 1375), sira: 3 },
   {
     id: 'surec-05',
     kod: 'P.05',
     baslik: 'GÜNEY DUVARI, TERK EDİLMİŞ İŞLER',
     sagBilgi: 'KARAKÖY / İST',
     sagVurgu: null,
-    gorsel: surecGorseli(5, 'Güney duvarına yaslanmış, tamamlanmamış işler dizisi.', 1400, 900),
+    gorsel: surecGorseli(5, 'Atölyenin iç görünümü: duvara dizilmiş çalışmalar, tezgâh, raflar ve vantilatör.', 1100, 1375),
     sira: 4,
   },
 ]
