@@ -48,6 +48,31 @@ export default function HomePage() {
     if (ayarlar) applyTokens(ayarlar.jetonlar, ayarlar.tipografi)
   }, [ayarlar])
 
+  /*
+   * A6'daki "indekslensin" anahtarı bugüne kadar yalnızca bir kayıttı; kolofon
+   * "NO INDEX" yazıyordu ama sayfada bunu söyleyen bir şey yoktu. Ayar artık
+   * gerçek bir robots etiketine ve sayfa başlığı/açıklamasına bağlı. Müşteri
+   * önizlemesi bu sayede varsayılan olarak arama motorlarına kapalı; yayına
+   * çıkarken anahtarı panelden açmak yetiyor.
+   */
+  useEffect(() => {
+    if (!ayarlar?.seo) return
+    const { baslik, aciklama, indexlensin } = ayarlar.seo
+    if (baslik) document.title = baslik
+
+    const etiketAyarla = (ad, icerik) => {
+      let el = document.head.querySelector(`meta[name="${ad}"]`)
+      if (!el) {
+        el = document.createElement('meta')
+        el.setAttribute('name', ad)
+        document.head.appendChild(el)
+      }
+      el.setAttribute('content', icerik)
+    }
+    if (aciklama) etiketAyarla('description', aciklama)
+    etiketAyarla('robots', indexlensin ? 'index, follow' : 'noindex, nofollow')
+  }, [ayarlar])
+
   /* Çember, yayınlanmış sıraya göre dizilir. */
   const cemberEserleri = useMemo(() => {
     if (!veri) return []
