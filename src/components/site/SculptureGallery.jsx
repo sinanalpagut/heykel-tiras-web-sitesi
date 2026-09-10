@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import SculptureCard from './SculptureCard.jsx'
 import GalleryReadout from './GalleryReadout.jsx'
 import useRingController from '../../hooks/useRingController.js'
@@ -14,8 +14,16 @@ const inkAlfa = (yuzde) => `color-mix(in srgb, var(--kb-ink, #EAEAEA) ${yuzde}%,
  * @param {object[]} props.eserler   Çemberde gösterilecek eserler, yayın sırasında
  * @param {object} [props.ayarlar]   Yayındaki site ayarları
  * @param {(eser:object, indeks:number)=>void} [props.onEserSecildi]
+ * @param {boolean} [props.duraklat]    Detay katmanı açıkken çember hareketi kilitlenir
+ * @param {number|null} [props.odakIndeks] Değiştiğinde bu kart çemberin önüne döner
  */
-export default function SculptureGallery({ eserler = [], ayarlar, onEserSecildi }) {
+export default function SculptureGallery({
+  eserler = [],
+  ayarlar,
+  onEserSecildi,
+  duraklat = false,
+  odakIndeks = null,
+}) {
   const adet = eserler.length
   const adim = pozisyonAcisi(adet)
 
@@ -38,13 +46,24 @@ export default function SculptureGallery({ eserler = [], ayarlar, onEserSecildi 
   const [onEser, setOnEser] = useState(0)
   const onIndeks = adet ? Math.min(onEser, adet - 1) : 0
 
-  const { bolgeRef, halkaRef, sigdirRef, kartRefleri } = useRingController({
+  const { bolgeRef, halkaRef, sigdirRef, kartRefleri, hedefeGit } = useRingController({
     adet,
     otomatikDonus,
     hiz,
     kapali: adet === 0,
+    duraklat,
     onOnEserDegisti: setOnEser,
   })
+
+  /*
+   * Detay katmanı bir eseri açtığında o kart çemberin önüne döner; katman
+   * kapanınca ziyaretçi tam baktığı eserin karşısında kalır. Bunu prop olarak
+   * almak, galeriye dışarıdan ref uzatmaktan daha az kırılgan.
+   */
+  useEffect(() => {
+    if (odakIndeks == null) return
+    hedefeGit(odakIndeks)
+  }, [odakIndeks, hedefeGit])
 
   /* Dev isim tasarımda iki satır: "KESE" / "BENAV" — boşluktan bölünür. */
   const adSatirlari = String(ayarlar?.kimlik?.ad || 'KESE BENAV')

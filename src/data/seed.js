@@ -35,20 +35,51 @@ const ESER_FOTOGRAFI = [
   'alci-figur', 'seritli-bronz-2', 'ceketli-bust', 'atolye-ic', 'blok-govde',
 ]
 
-const taslakGorsel = (i) => {
-  const ad = ESER_FOTOGRAFI[i - 1]
-  return {
-    id: `gorsel-foto-${String(i).padStart(2, '0')}`,
-    url: `/foto/${ad}.webp`,
-    alt: FOTOGRAFLAR[ad],
-    genislik: 1020,
-    yukseklik: 1360,
-    kaynakAdi: `${ad}.webp`,
-    kaynakBayt: 0,
-    kirpma: null,
-    oran: '3:4',
-    taslakMi: true,
+const HAVUZ = Object.keys(FOTOGRAFLAR)
+
+/**
+ * Bir eserin görsel listesi: ana kare + detay katmanındaki şerit için ek kareler.
+ *
+ * DÜRÜSTLÜK NOTU: ek kareler aynı heykelin başka açıları değil, havuzdaki başka
+ * heykellerin fotoğrafları. Demo içeriği olduğu için bilinçli tercih — arşivde
+ * eser başına tek kare olduğundan şerit boş kalırdı. Gerçek fotoğraflar geldikçe
+ * panelden (A2 → görsel → A3) eserin kendi açıları yüklenecek.
+ *
+ * Tek istisna gerçek: 'seritli-bronz' ile 'seritli-bronz-2' aynı heykelin iki
+ * açısı, bu yüzden hep aynı eserde ve yan yana duruyorlar.
+ */
+const gorselKaydi = (ad, sira) => ({
+  id: `gorsel-foto-${ad}-${sira}`,
+  url: `/foto/${ad}.webp`,
+  alt: FOTOGRAFLAR[ad],
+  genislik: 1020,
+  yukseklik: 1360,
+  kaynakAdi: `${ad}.webp`,
+  kaynakBayt: 0,
+  kirpma: null,
+  oran: '3:4',
+  taslakMi: true,
+})
+
+const eserGorselleri = (i) => {
+  const ana = ESER_FOTOGRAFI[i - 1]
+  const adlar = [ana]
+
+  // Şeritli bronzun iki açısı birbirinden ayrılmasın.
+  const es = ana === 'seritli-bronz' ? 'seritli-bronz-2' : ana === 'seritli-bronz-2' ? 'seritli-bronz' : null
+  if (es) adlar.push(es)
+
+  /*
+   * Kalanları havuzda dolaşarak seç. Sabit bir kaydırma denemek yetmiyordu:
+   * aday zaten seçilmiş olabiliyor ve bazı eserler ikinci hatta tek kareyle
+   * kalıyordu. Havuzu baştan tarayınca her esere tam üç kare düşüyor.
+   */
+  for (let adim = 1; adlar.length < 3 && adim <= HAVUZ.length; adim += 1) {
+    const aday = HAVUZ[(HAVUZ.indexOf(ana) + i * 3 + adim) % HAVUZ.length]
+    if (!adlar.includes(aday)) adlar.push(aday)
   }
+
+  return adlar.map((ad, k) => gorselKaydi(ad, k + 1))
 }
 
 const eser = (i, baslik, malzemeSinifi, malzeme, yil, [y, g, d], ek = {}) => ({
@@ -64,8 +95,8 @@ const eser = (i, baslik, malzemeSinifi, malzeme, yil, [y, g, d], ek = {}) => ({
   durum: 'yayinda',
   cemberde: true,
   sira: i - 1,
-  gorseller: [taslakGorsel(i)],
-  anaGorselId: `gorsel-foto-${String(i).padStart(2, '0')}`,
+  gorseller: eserGorselleri(i),
+  anaGorselId: eserGorselleri(i)[0].id,
   olusturuldu: T0 - (16 - i) * 86400000,
   guncellendi: T0 - (16 - i) * 3600000,
   ...ek,

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { CEMBER, pozisyonAcisi } from '../config/tokens.js'
 import useReducedMotion from './useReducedMotion.js'
 
@@ -15,14 +15,17 @@ import useReducedMotion from './useReducedMotion.js'
  * @param {boolean} [secenekler.otomatikDonus]  Kendiliğinden dönsün mü
  * @param {number} [secenekler.hiz]             Otomatik dönüş hızı (derece/kare)
  * @param {boolean} [secenekler.kapali]         Tüm hareketi durdur (boş çember, önizleme)
+ * @param {boolean} [secenekler.duraklat]       Geçici hareket kilidi (detay katmanı açık)
  * @param {(indeks:number)=>void} [secenekler.onOnEserDegisti]
- * @returns {{bolgeRef:object, halkaRef:object, sigdirRef:object, kartRefleri:object, onIndeks:object}}
+ * @returns {{bolgeRef:object, halkaRef:object, sigdirRef:object, kartRefleri:object,
+ *   onIndeks:object, hedefeGit:(indeks:number)=>void}}
  */
 export default function useRingController({
   adet = 0,
   otomatikDonus = true,
   hiz = CEMBER.otomatikHiz,
   kapali = false,
+  duraklat = false,
   onOnEserDegisti,
 } = {}) {
   const bolgeRef = useRef(null)
@@ -47,10 +50,14 @@ export default function useRingController({
     bulanikOnbellek: [],
   })
 
-  /* Kare döngüsü her karede buradan okur; böylece döngü bir kez kurulur. */
-  const ayarRef = useRef({ adet, otomatikDonus, hiz, sakin, onOnEserDegisti })
+  /*
+   * Kare döngüsü her karede buradan okur; böylece döngü bir kez kurulur.
+   * duraklat da buraya konur: katman her açılıp kapandığında döngü yeniden
+   * kurulsaydı dönüş açısı sıfırlanır, çember zıplardı.
+   */
+  const ayarRef = useRef({ adet, otomatikDonus, hiz, sakin, duraklat, onOnEserDegisti })
   useEffect(() => {
-    ayarRef.current = { adet, otomatikDonus, hiz, sakin, onOnEserDegisti }
+    ayarRef.current = { adet, otomatikDonus, hiz, sakin, duraklat, onOnEserDegisti }
   })
 
   /*
@@ -105,6 +112,11 @@ export default function useRingController({
     let yakalayan = null
 
     const bas = (e) => {
+      /*
+       * Kilitliyken yakalamayı hiç almıyoruz: sürükleme başlamadığı gibi kartın
+       * kendi tıklama algısı da doğal yoluna kalıyor.
+       */
+      if (ayarRef.current.duraklat) return
       d.drag = true
       d.vel = 0
       d.hedef = null
@@ -128,6 +140,8 @@ export default function useRingController({
 
     const oynat = (e) => {
       if (!d.drag) return
+      /* Parmak inikken kilit geldiyse (katman açıldı) hareket oracıkta biter. */
+      if (ayarRef.current.duraklat) return
       const dx = e.clientX - d.lastX
       d.lastX = e.clientX
       const donus = dx * CEMBER.surukleKatsayisi
@@ -167,6 +181,11 @@ export default function useRingController({
     const d = durum.current
 
     const tus = (e) => {
+      /*
+       * Kilitliyken oklar çemberi döndürmez ve preventDefault da yapılmaz;
+       * tuşlar açık katmanın kendi gezinmesine kalsın.
+       */
+      if (ayarRef.current.duraklat) return
       const adim = pozisyonAcisi(ayarRef.current.adet)
       if (!adim) return
       const temel = d.hedef == null ? d.rot : d.hedef
@@ -197,11 +216,20 @@ export default function useRingController({
 
     const tik = () => {
       kare = requestAnimationFrame(tik)
-      const { adet: n, otomatikDonus: oto, hiz: h, sakin: sk, onOnEserDegisti: bildir } =
-        ayarRef.current
+      const {
+        adet: n,
+        otomatikDonus: oto,
+        hiz: h,
+        sakin: sk,
+        duraklat: kilit,
+        onOnEserDegisti: bildir,
+      } = ayarRef.current
 
       if (d.hedef != null) {
-        /* Klavye hedefi: sakin kipte anında, normalde yumuşak yaklaşarak. */
+        /*
+         * Hedef takibi kilitten MUAF: katman açılırken seçilen eseri öne
+         * döndüren de bu koldur. Sakin kipte anında, normalde yumuşak yaklaşarak.
+         */
         const fark = d.hedef - d.rot
         if (sk || Math.abs(fark) < 0.05) {
           d.rot = d.hedef
@@ -209,6 +237,9 @@ export default function useRingController({
         } else {
           d.rot += fark * 0.18
         }
+      } else if (kilit) {
+        /* Kilit: hız birikmesin, katman kapanınca çember savrularak başlamasın. */
+        d.vel = 0
       } else if (!d.drag) {
         if (sk) d.vel = 0
         else {
@@ -261,5 +292,25 @@ export default function useRingController({
     if (onIndeks.current >= adet) onIndeks.current = -1
   }, [adet])
 
-  return { bolgeRef, halkaRef, sigdirRef, kartRefleri, onIndeks }
+  /*
+   * Verilen kartı çemberin önüne döndürür. Ön yüz koşulu cos(i*adim + rot) = 1,
+   * yani rot = -i*adim + 360k. k, mevcut açıya en yakın turu seçer — çember
+   * hedefe en kısa yoldan gider, tersine tam tur atmaz.
+   *
+   * Kimliği kararlı: ayarları ayarRef'ten okuduğu için bağımlılığı yok, bu
+   * yüzden çağıran effect'lerde bağımlılık olarak güvenle kullanılabilir.
+   */
+  const hedefeGit = useCallback((indeks) => {
+    const n = ayarRef.current.adet
+    if (!(indeks >= 0 && indeks < n)) return
+    const adim = pozisyonAcisi(n)
+    if (!adim) return
+    const d = durum.current
+    const temel = -indeks * adim
+    d.hedef = temel + Math.round((d.rot - temel) / 360) * 360
+    /* Birikmiş atalet hedefi geçmesin. */
+    d.vel = 0
+  }, [])
+
+  return { bolgeRef, halkaRef, sigdirRef, kartRefleri, onIndeks, hedefeGit }
 }

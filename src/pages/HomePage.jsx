@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useMatch, useNavigate } from 'react-router-dom'
 import { useDepoVerisi } from '../services/DepoContext.jsx'
 import { applyTokens } from '../config/tokens.js'
 import { duyurulacakSergi } from '../data/schema.js'
@@ -12,6 +13,7 @@ import SculptureGallery from '../components/site/SculptureGallery.jsx'
 import AtolyeBolumu from '../components/site/AtolyeBolumu.jsx'
 import DuyuruSeridi from '../components/site/DuyuruSeridi.jsx'
 import SergilerBolumu from '../components/site/SergilerBolumu.jsx'
+import EserDetay from '../components/site/EserDetay.jsx'
 import Kolofon from '../components/site/Kolofon.jsx'
 import PerdeYukleniyor from '../components/common/PerdeYukleniyor.jsx'
 import HataKutusu from '../components/common/HataKutusu.jsx'
@@ -98,6 +100,32 @@ export default function HomePage() {
    */
   const duyuru = useMemo(() => duyurulacakSergi(veri?.sergiler ?? []), [veri])
 
+  /*
+   * Açık eser adresten okunur (/eser/:eserId), bileşen durumundan değil.
+   * Böylece tek bir işin linki paylaşılabiliyor, tarayıcının geri tuşu katmanı
+   * kapatıyor ve sayfa yenilenince aynı eser açık geliyor. Rota joker olduğu
+   * için adres değişimi HomePage'i yeniden bağlamaz — çember ayakta kalır.
+   */
+  const eslesme = useMatch('/eser/:eserId')
+  const gezin = useNavigate()
+  const acikEserId = eslesme?.params?.eserId ?? null
+
+  const acikIndeks = useMemo(() => {
+    if (!acikEserId) return -1
+    return cemberEserleri.findIndex((e) => e.id === acikEserId)
+  }, [acikEserId, cemberEserleri])
+  const acikEser = acikIndeks >= 0 ? cemberEserleri[acikIndeks] : null
+
+  /* Adreste tanınmayan bir eser varsa katmanı açık göstermek yerine sessizce ana sayfaya dön. */
+  useEffect(() => {
+    if (acikEserId && !yukleniyor && cemberEserleri.length && acikIndeks < 0) {
+      gezin('/', { replace: true })
+    }
+  }, [acikEserId, acikIndeks, cemberEserleri.length, gezin, yukleniyor])
+
+  const eserAc = useCallback((eser) => gezin(`/eser/${eser.id}`), [gezin])
+  const eserKapat = useCallback(() => gezin('/'), [gezin])
+
   useGsapReveal(sayfaRef, { kapali: hareketAzalt || yukleniyor })
   useHeroKoreografi(heroRef, { kapali: hareketAzalt || yukleniyor })
 
@@ -127,13 +155,27 @@ export default function HomePage() {
 
       <main>
         <div ref={heroRef}>
-          <SculptureGallery eserler={cemberEserleri} ayarlar={ayarlar} />
+          <SculptureGallery
+            eserler={cemberEserleri}
+            ayarlar={ayarlar}
+            onEserSecildi={eserAc}
+            duraklat={Boolean(acikEser)}
+            odakIndeks={acikIndeks >= 0 ? acikIndeks : null}
+          />
         </div>
 
         <AtolyeBolumu kareler={veri?.surecKareleri ?? []} />
 
         <SergilerBolumu sergiler={veri?.sergiler ?? []} eserler={veri?.eserler ?? []} />
       </main>
+
+      <EserDetay
+        eser={acikEser}
+        eserler={cemberEserleri}
+        sergiler={veri?.sergiler ?? []}
+        onKapat={eserKapat}
+        onEserDegistir={eserAc}
+      />
 
       <Kolofon
         kimlik={ayarlar?.kimlik}

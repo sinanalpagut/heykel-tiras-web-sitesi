@@ -15,7 +15,7 @@ import {
 import * as blob from '../storage/blobStore.js'
 
 const ANAHTAR = 'kese-benav/durum'
-const SEMA_SURUMU = 3
+const SEMA_SURUMU = 4
 
 const gecikme = Number(import.meta.env?.VITE_SAHTE_GECIKME ?? (import.meta.env?.DEV ? 180 : 0))
 const bekle = () => (gecikme > 0 ? new Promise((r) => setTimeout(r, gecikme)) : Promise.resolve())
@@ -91,13 +91,14 @@ function gocur(d, surum) {
       }),
     }
   }
-  if (surum < 3) {
+  if (surum < 4) {
     /*
      * v3'te tohum görselleri üretilmiş SVG'lerden gerçek atölye fotoğraflarına
      * geçti. `taslakMi: true` tam olarak "bu kayıt yer tutucu, kullanıcı
      * yüklemesi değil" demek; yalnızca öyle olanlar tazeleniyor. Panelden
      * gerçek görsel yüklenmiş eserlere dokunulmuyor — onların ikili verisi
      * IndexedDB'de duruyor ve üzerine yazmak veri kaybı olurdu.
+     * v4: eser başına birden fazla kare eklendi — aynı kural yeniden çalışır.
      */
     const tohumEser = new Map(TOHUM_ESERLER.map((e) => [e.id, e]))
     const tohumSurec = new Map(TOHUM_SUREC.map((s) => [s.id, s]))

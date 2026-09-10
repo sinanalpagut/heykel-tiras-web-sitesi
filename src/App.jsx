@@ -24,7 +24,17 @@ export default function App() {
         <Suspense fallback={<PerdeYukleniyor mesaj="YÜKLENİYOR" />}>
           <Routes>
             <Route
-              path="/"
+              /*
+               * Tek rota, joker ile: hem "/" hem "/eser/:eserId" buraya düşer.
+               * İkisi ayrı Route olsaydı adres değişince React Router farklı bir
+               * eşleşme üretir ve HomePage yeniden bağlanırdı — çember sıfırlanır,
+               * shader yeniden kurulur, gözle görülür bir sıçrama olurdu.
+               * Hangi eserin açık olduğunu HomePage useMatch ile kendisi okur.
+               *
+               * Yönlendirme sıralaması: React Router sabit parçaları jokerden
+               * üstün tuttuğu için /admin/... yolları bu rotanın önüne geçer.
+               */
+              path="/*"
               element={
                 <ErrorBoundary ad="Site">
                   <HomePage />
@@ -50,7 +60,6 @@ export default function App() {
               <Route path="sergiler" element={<Sergiler />} />
               <Route path="ayarlar" element={<SiteAyarlari />} />
             </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
       </AuthSaglayici>
