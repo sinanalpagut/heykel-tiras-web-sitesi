@@ -3,8 +3,21 @@ import LazyImage from '../common/LazyImage.jsx'
 import { anaGorsel, metaMetni } from '../../data/schema.js'
 import { CEMBER, MALZEME_ETIKETI, vurguRengi } from '../../config/tokens.js'
 
-/** Bu mesafeden az hareket eden basış tıklamadır; fazlası çemberi çevirme niyetidir. */
-const TIKLAMA_ESIGI = 6
+/*
+ * Basış sırasında kat edilen TOPLAM yol bu eşiğin altındaysa tıklamadır.
+ *
+ * İki şey düzeltildi:
+ * 1) Eşik 6px'ti ve gerçek kullanımda dardı. Çember dönerken kullanıcı hareketli
+ *    hedefi takip ediyor, tıklarken el kaçınılmaz olarak birkaç piksel kayıyor
+ *    ve seçim sessizce iptal oluyordu — "esere tıklayamıyorum" şikâyeti buydu.
+ * 2) Ölçü, başlangıç ile bitiş arasındaki DÜZ mesafeydi; kullanıcı sürükleyip
+ *    başladığı yere dönerse çemberi çevirdiği halde tıklamış sayılıyordu.
+ *    Toplam yol ikisini de doğru ayırıyor.
+ *
+ * 14px, çemberde ~2 derecelik dönüşe karşılık gelir; gözle fark edilmez, yani
+ * bu kadar kayma "çevirmek istedim" demek değildir.
+ */
+const TIKLAMA_ESIGI = 14
 
 /*
  * Jetonlar CSS değişkenine bağlı olduğu için Tailwind'in `text-ink/40` biçimi
@@ -50,16 +63,30 @@ export default function SculptureCard({
   const sec = () => onSecildi?.(eser, indeks)
 
   const basildi = (e) => {
-    basim.current = { x: e.clientX, y: e.clientY }
+    basim.current = { x: e.clientX, y: e.clientY, yol: 0 }
   }
 
-  const kalkti = (e) => {
+  const oynadi = (e) => {
+    const b = basim.current
+    if (!b) return
+    b.yol += Math.hypot(e.clientX - b.x, e.clientY - b.y)
+    b.x = e.clientX
+    b.y = e.clientY
+  }
+
+  const kalkti = () => {
     const b = basim.current
     basim.current = null
     if (!b) return
     /* Sürükleyerek çemberi çeviren kullanıcı esere tıklamış sayılmamalı. */
-    if (Math.hypot(e.clientX - b.x, e.clientY - b.y) > TIKLAMA_ESIGI) return
+    if (b.yol > TIKLAMA_ESIGI) return
     sec()
+  }
+
+  /* Parmak/fare kartın dışına çıkarsa basış düşer; yoksa bir sonraki kalkış
+     yanlışlıkla tıklama sayılırdı. */
+  const iptal = () => {
+    basim.current = null
   }
 
   /* Fare tıklaması yukarıda pointerup ile ele alındı; buraya yalnızca klavye (detail 0) kalır. */
@@ -74,7 +101,9 @@ export default function SculptureCard({
       data-i={indeks + 1}
       data-mat={eser.malzemeSinifi}
       onPointerDown={basildi}
+      onPointerMove={oynadi}
       onPointerUp={kalkti}
+      onPointerCancel={iptal}
       className="absolute left-1/2 top-1/2 select-none"
       style={{
         width: `${CEMBER.kartGenislik}px`,
