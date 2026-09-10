@@ -61,7 +61,18 @@ export default {
         gren: '26',
         okuma: '40',
         nav: '60',
-        imlec: '99',
+        /*
+         * Eser detay katmanı. Tasarımın özgün yığınında yoktu; sonradan eklendi
+         * ve nav dahil her şeyin üstünde durması gerekiyor.
+         */
+        katman: '120',
+        /*
+         * İmleç HER ZAMAN en üstte. Site global olarak cursor:none uyguladığı
+         * için özel imleç bir katmanın arkasında kalırsa kullanıcının hiç imleci
+         * görünmez olur — detay katmanı eklendiğinde tam bu oldu (katman 120,
+         * imleç 99'du). Bu yüzden imlecin değeri yığındaki her şeyin üstünde.
+         */
+        imlec: '200',
       },
       keyframes: {
         'kb-blink': { '0%,49%': { opacity: '1' }, '50%,100%': { opacity: '.15' } },

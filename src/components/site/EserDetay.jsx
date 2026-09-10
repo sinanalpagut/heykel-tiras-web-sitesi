@@ -216,7 +216,7 @@ export default function EserDetay({ eser, eserler, sergiler, onKapat, onEserDegi
     eser.malzemeSinifi === 'metal' ? 'text-metal border-metal/40' : 'text-tas border-tas/40'
 
   return (
-    <div className="fixed inset-0 z-[120]" onKeyDown={tus}>
+    <div className="fixed inset-0 z-katman" onKeyDown={tus}>
       {/* Arka perde — çember görünür kalır, okunmaz olur. Tıklayınca kapanır. */}
       <div
         aria-hidden="true"
