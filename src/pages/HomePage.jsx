@@ -147,7 +147,19 @@ export default function HomePage() {
         tasRengi={ayarlar?.jetonlar?.tas}
       />
       <KilavuzCizgileri kapali={doku?.kilavuz === false} />
-      <OzelImlec kapali={doku?.ozelImlec === false} />
+      {/*
+        Detay katmanı açıkken özel imleç kapanır ve sistem imleci geri gelir.
+        Üç sebep:
+        1) Katmanın üstünde imleç yalnızca 7 pikselik noktaya düşüyor (halka ve
+           artı hâlleri çembere ait) ve difference karışımı fotoğrafın orta
+           tonlarında o noktayı yutuyor — imleç kaybolmuş gibi görünüyor.
+        2) Katmanın içi düğme, küçük resim ve bağlantı dolu; sistem imlecinin
+           işaretçi/el biçimleri buralarda dekoratif bir noktadan daha yararlı.
+        3) z sırasıyla uğraşmak yerine sorunu tamamen ortadan kaldırıyor.
+        Özel imleç çemberin deneyimine ait; katman açıkken çember zaten durmuş
+        ve arkada bulanık duruyor.
+      */}
+      <OzelImlec kapali={doku?.ozelImlec === false || Boolean(acikEser)} />
 
       <SiteNav kimlik={ayarlar?.kimlik} eserAdedi={arsiv.adet} />
 
