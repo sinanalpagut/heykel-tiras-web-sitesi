@@ -246,6 +246,16 @@ export const VARSAYILAN_AYARLAR = {
     adres: ['KEMANKEŞ CAD. 44/B', 'KARAKÖY, İSTANBUL'],
     temsil: ['GALERİ HAM — İSTANBUL', 'SPUR PROJECTS — BERLİN'],
     koordinat: '41.0082 N / 28.9784 E',
+    /*
+     * YER TUTUCU metin — sanatçıdan gerçek biyografi gelene kadar. Kurgusal
+     * "Kese Benav" kimliğiyle tutarlı yazıldı; gerçek kurum/kişi adı geçmiyor.
+     * Paragraflar boş satırla ayrılır; site \n\n üzerinden bölerek basar.
+     */
+    biyografi: [
+      "1987'de Çorum'da doğdu. İlk işlerini babasının kaynakhanesinde, hurda demiri sökerek verdi; heykel eğitimini ikinci yılında bıraktı, döküm ocağını bırakmadı.",
+      "2019'dan bu yana Karaköy'de, eski bir yük deposundan bozma atölyede çalışıyor. Metalin ve taşın söz dinlemeyişini konu ediyor: işleri tamamlanmış nesneler değil, durdurulmuş süreçler. Her yüzey, malzemeyle yapılan pazarlığın tutanağı.",
+      "Üretmediği günlerde atölyesini randevuyla ziyarete açıyor. Randevu için kolofondaki adrese yazın; kapı ağır, zili yok.",
+    ].join('\n\n'),
   },
 }
 

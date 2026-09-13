@@ -5,6 +5,7 @@ import { applyTokens } from '../config/tokens.js'
 import { duyurulacakSergi } from '../data/schema.js'
 import useReducedMotion from '../hooks/useReducedMotion.js'
 import useGsapReveal, { useHeroKoreografi } from '../hooks/useGsapReveal.js'
+import useKunyeGorunurlugu from '../hooks/useKunyeGorunurlugu.js'
 import ShaderArkaPlan from '../components/site/ShaderArkaPlan.jsx'
 import KilavuzCizgileri from '../components/site/KilavuzCizgileri.jsx'
 import OzelImlec from '../components/site/OzelImlec.jsx'
@@ -14,6 +15,7 @@ import AtolyeBolumu from '../components/site/AtolyeBolumu.jsx'
 import DuyuruSeridi from '../components/site/DuyuruSeridi.jsx'
 import SergilerBolumu from '../components/site/SergilerBolumu.jsx'
 import EserDetay from '../components/site/EserDetay.jsx'
+import BiyografiBolumu from '../components/site/BiyografiBolumu.jsx'
 import Kolofon from '../components/site/Kolofon.jsx'
 import PerdeYukleniyor from '../components/common/PerdeYukleniyor.jsx'
 import HataKutusu from '../components/common/HataKutusu.jsx'
@@ -28,6 +30,7 @@ import HataKutusu from '../components/common/HataKutusu.jsx'
  */
 export default function HomePage() {
   const hareketAzalt = useReducedMotion()
+  const kunyeGorunur = useKunyeGorunurlugu()
   const sayfaRef = useRef(null)
   const heroRef = useRef(null)
 
@@ -126,6 +129,20 @@ export default function HomePage() {
   const eserAc = useCallback((eser) => gezin(`/eser/${eser.id}`), [gezin])
   const eserKapat = useCallback(() => gezin('/'), [gezin])
 
+  /*
+   * Sekme başlığı açık eseri söylesin: paylaşılan /eser/... linki ve tarayıcı
+   * geçmişi böylece anlamlı bir ada kavuşuyor. Kapanınca genel SEO başlığına
+   * dönülür — o da yukarıdaki effect'te ayarlanıyor.
+   */
+  useEffect(() => {
+    if (!acikEser) return undefined
+    const onceki = document.title
+    document.title = `${acikEser.baslik} — ${ayarlar?.kimlik?.ad || 'KESE BENAV'}`
+    return () => {
+      document.title = onceki
+    }
+  }, [acikEser, ayarlar])
+
   useGsapReveal(sayfaRef, { kapali: hareketAzalt || yukleniyor })
   useHeroKoreografi(heroRef, { kapali: hareketAzalt || yukleniyor })
 
@@ -161,9 +178,9 @@ export default function HomePage() {
       */}
       <OzelImlec kapali={doku?.ozelImlec === false || Boolean(acikEser)} />
 
-      <SiteNav kimlik={ayarlar?.kimlik} eserAdedi={arsiv.adet} />
+      <SiteNav kimlik={ayarlar?.kimlik} eserAdedi={arsiv.adet} gorunur={kunyeGorunur} />
 
-      <DuyuruSeridi sergi={duyuru} />
+      <DuyuruSeridi sergi={duyuru} gorunur={kunyeGorunur} />
 
       <main>
         <div ref={heroRef}>
@@ -179,10 +196,13 @@ export default function HomePage() {
         <AtolyeBolumu kareler={veri?.surecKareleri ?? []} />
 
         <SergilerBolumu sergiler={veri?.sergiler ?? []} eserler={veri?.eserler ?? []} />
+
+        <BiyografiBolumu kimlik={ayarlar?.kimlik} sergiler={veri?.sergiler ?? []} />
       </main>
 
       <EserDetay
         eser={acikEser}
+        kimlik={ayarlar?.kimlik}
         eserler={cemberEserleri}
         sergiler={veri?.sergiler ?? []}
         onKapat={eserKapat}

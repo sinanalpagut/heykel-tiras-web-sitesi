@@ -74,6 +74,7 @@ export default function AtolyeBolumu({ kareler = [], metinler }) {
     <section
       ref={bolumRef}
       aria-labelledby="atolye-baslik"
+      id="atolye"
       data-screen-label="Atölye — Süreç"
       className="relative z-icerik overflow-hidden px-[30px] pb-[190px] pt-[170px]"
     >

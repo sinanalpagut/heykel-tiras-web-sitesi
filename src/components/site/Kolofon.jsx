@@ -73,6 +73,7 @@ export default function Kolofon({ kimlik = {}, eserAdedi = 0, yilAraligi, sonGun
 
   return (
     <footer
+      id="iletisim"
       data-screen-label="Kolofon"
       style={{ borderTopColor: ink(16) }}
       className="relative z-icerik overflow-hidden border-t px-[30px] pt-20"

@@ -32,7 +32,7 @@ const DUGME =
 
 const iki = (n) => String(n).padStart(2, '0')
 
-export default function EserDetay({ eser, eserler, sergiler, onKapat, onEserDegistir }) {
+export default function EserDetay({ eser, kimlik, eserler, sergiler, onKapat, onEserDegistir }) {
   const hareketAzalt = useReducedMotion()
   const cerceveRef = useRef(null)
   const acik = Boolean(eser)
@@ -435,6 +435,30 @@ export default function EserDetay({ eser, eserler, sergiler, onKapat, onEserDegi
                   })}
                 </ul>
               </div>
+            )}
+
+            {/*
+              Koleksiyoner/galeri sorusu için sıfır-altyapı kanal: konusu ve
+              gövdesi önceden dolu bir e-posta. Adres yoksa düğme hiç basılmaz —
+              boş mailto tıklayan ziyaretçiyi sessizce hiçliğe götürürdü.
+            */}
+            {kimlik?.eposta && (
+              <a
+                href={`mailto:${kimlik.eposta}?subject=${encodeURIComponent(
+                  `${eser.baslik} hakkında bilgi`,
+                )}&body=${encodeURIComponent(
+                  `Merhaba,
+
+"${eser.baslik}" adlı eser hakkında bilgi almak istiyorum.
+
+${
+                    typeof window !== 'undefined' ? window.location.href : ''
+                  }`,
+                )}`}
+                className="mt-8 inline-block border border-tas px-4 py-3 text-micro tracking-genis text-tas transition-colors hover:bg-tas hover:text-cikolata"
+              >
+                ESER HAKKINDA BİLGİ AL →
+              </a>
             )}
           </div>
         </div>

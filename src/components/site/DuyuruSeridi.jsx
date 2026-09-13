@@ -43,7 +43,7 @@ function kapaliYaz(anahtar) {
  *   `duyurulacakSergi(sergiler)` sonucu
  * @param {string} [props.className]
  */
-export default function DuyuruSeridi({ sergi = null, className = '' }) {
+export default function DuyuruSeridi({ sergi = null, gorunur = true, className = '' }) {
   const anahtar = sergi?.id ? ANAHTAR_ONEKI + sergi.id : null
 
   /*
@@ -88,11 +88,11 @@ export default function DuyuruSeridi({ sergi = null, className = '' }) {
    * aşağıdan başlıyor. Şerit kapatılınca ya da hiç basılmayınca değişken 0px olur.
    */
   const seritRef = useRef(null)
-  const gorunur = Boolean(sergi) && !kapatma.kapali
+  const basiliyor = Boolean(sergi) && !kapatma.kapali
   useEffect(() => {
     const kok = document.documentElement
     const el = seritRef.current
-    if (!gorunur || !el) {
+    if (!basiliyor || !el) {
       kok.style.setProperty('--kb-duyuru-h', '0px')
       return undefined
     }
@@ -106,7 +106,7 @@ export default function DuyuruSeridi({ sergi = null, className = '' }) {
       window.removeEventListener('resize', olc)
       kok.style.setProperty('--kb-duyuru-h', '0px')
     }
-  }, [gorunur])
+  }, [basiliyor])
 
   if (!sergi || kapatma.kapali) return null
 
@@ -124,7 +124,9 @@ export default function DuyuruSeridi({ sergi = null, className = '' }) {
     <aside
       ref={seritRef}
       aria-label="Sergi duyurusu"
-      className={`fixed inset-x-0 top-0 z-nav border-b border-ink/[0.14] bg-cikolata/[0.72] backdrop-blur-[9px] ${className}`}
+      className={`fixed inset-x-0 top-0 z-nav border-b border-ink/[0.14] bg-cikolata/[0.72] backdrop-blur-[9px] motion-safe:transition-[opacity,transform] motion-safe:duration-300 motion-safe:ease-cikis ${
+        gorunur ? 'opacity-100' : 'invisible -translate-y-2 opacity-0'
+      } ${className}`}
     >
       {/*
         375px'te tek satır nowrap taşıyordu (okuma çubuğunda aynı hata yapılmıştı);

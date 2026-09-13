@@ -256,6 +256,7 @@ export default function SergilerBolumu({ sergiler = [], eserler = [], className 
     <section
       ref={bolumRef}
       aria-labelledby="sergiler-baslik"
+      id="sergiler"
       data-screen-label="Sergiler"
       className={`relative z-icerik overflow-hidden px-[30px] py-[150px] ${className}`}
     >

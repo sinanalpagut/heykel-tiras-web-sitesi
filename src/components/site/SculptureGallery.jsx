@@ -72,6 +72,7 @@ export default function SculptureGallery({
 
   return (
     <section
+      id="eserler"
       data-screen-label="Hero — Çember"
       className="relative z-icerik flex h-screen min-h-[560px] items-center justify-center overflow-hidden"
     >

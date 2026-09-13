@@ -4,6 +4,14 @@
 const SOLUK = 'text-micro tracking-cok-genis text-ink opacity-[0.42]'
 const DIKEY = 'text-micro tracking-[.34em] text-ink opacity-30'
 
+/*
+ * Köşe etiketleri artık gerçek çapa bağlantısı. Global `a` kuralı alt çizgi
+ * çizer; künyede o çizgi tasarımda yoktu, bu yüzden burada kapatılıyor.
+ * Hover'da taş rengine dönme davranışı global kuraldan geliyor ve kalıyor —
+ * etiketlerin tıklanabilir olduğunu o söylüyor.
+ */
+const CAPA = 'border-b-0'
+
 /**
  * Sayfanın dört köşesine ve iki yanına yerleşen sabit künye şeridi.
  *
@@ -11,16 +19,20 @@ const DIKEY = 'text-micro tracking-[.34em] text-ink opacity-30'
  * yalnızca metin blokları pointer-events:auto — böylece köşeler arasındaki boşluk
  * çemberin sürükleme alanı olarak kullanılabilir.
  *
+ * Görünürlük dışarıdan yönetilir (useKunyeGorunurlugu): aşağı kaydırırken künye
+ * kaybolur, yukarı ilk harekette geri gelir. Gizliyken `invisible` şart —
+ * pointer-events-auto çocuklar, ebeveyn none olsa bile tıklama almaya devam
+ * ederdi; visibility hepsini tek hamlede kapatıyor.
+ *
  * @param {object} props
- * @param {{ad?:string,altBaslik?:string,dogumYeri?:string,eposta?:string,koordinat?:string}} [props.kimlik]
- *   ayarlar.kimlik — yayındaki site ayarlarından gelir
+ * @param {{ad?:string,altBaslik?:string,eposta?:string,koordinat?:string}} [props.kimlik]
  * @param {number} [props.eserAdedi] Arşiv sayacı; "ARŞİV 01—NN" buradan türer
+ * @param {boolean} [props.gorunur]
  * @param {string} [props.className]
  */
-export default function SiteNav({ kimlik, eserAdedi = 0, className = '' }) {
+export default function SiteNav({ kimlik, eserAdedi = 0, gorunur = true, className = '' }) {
   const ad = kimlik?.ad || ''
   const altBaslik = kimlik?.altBaslik || ''
-  const dogumYeri = kimlik?.dogumYeri || ''
   const eposta = kimlik?.eposta || ''
   const koordinat = kimlik?.koordinat || ''
 
@@ -33,7 +45,9 @@ export default function SiteNav({ kimlik, eserAdedi = 0, className = '' }) {
       aria-label="Site künyesi"
       /* Duyuru şeridi varsa künye onun altından başlar; yoksa değişken 0px. */
       style={{ top: 'var(--kb-duyuru-h, 0px)' }}
-      className={`pointer-events-none fixed inset-x-0 bottom-0 z-nav text-mini uppercase tracking-detay ${className}`}
+      className={`pointer-events-none fixed inset-x-0 bottom-0 z-nav text-mini uppercase tracking-detay motion-safe:transition-[opacity,transform] motion-safe:duration-300 motion-safe:ease-cikis ${
+        gorunur ? 'opacity-100' : 'invisible -translate-y-2 opacity-0'
+      } ${className}`}
     >
       {/*
         Mobil künye zemini.
@@ -49,35 +63,48 @@ export default function SiteNav({ kimlik, eserAdedi = 0, className = '' }) {
         className="absolute inset-x-0 top-0 h-[84px] bg-[color-mix(in_srgb,var(--kb-cikolata,#211A15)_72%,transparent)] backdrop-blur-[9px] md:hidden"
       />
 
-      {/* Sol üst — kimlik */}
+      {/* Sol üst — kimlik; tıklanınca çemberin başına döner */}
       <div className="pointer-events-auto absolute left-[30px] top-[26px]">
-        <div className="font-display text-[19px] font-extrabold leading-none tracking-[.02em]">
-          {ad}
-        </div>
+        <a href="#eserler" className={`${CAPA} block`} aria-label="Başa dön — eserler">
+          <span className="font-display text-[19px] font-extrabold leading-none tracking-[.02em]">
+            {ad}
+          </span>
+        </a>
         {altBaslik ? <div className={`mt-[7px] ${SOLUK}`}>{altBaslik}</div> : null}
       </div>
 
-      {/* Sağ üst — canlı arşiv sayacı */}
+      {/* Sağ üst — eserler + canlı arşiv sayacı */}
       <div className="pointer-events-auto absolute right-[30px] top-[26px] flex flex-col items-end gap-[7px] text-right">
-        <div className="flex items-center gap-[9px]">
+        <a href="#eserler" className={`${CAPA} flex items-center gap-[9px]`}>
           <span
             aria-hidden="true"
             className="h-[5px] w-[5px] bg-tas motion-safe:animate-kb-blink"
           />
           <span>ESERLER</span>
-        </div>
+        </a>
         <div className={SOLUK}>{arsivEtiketi}</div>
       </div>
 
-      {/* Sol alt — biyografi. Dar ekranda gizlenir, alt köşeler çakışmasın. */}
+      {/*
+        Sol alt — biyografi + sergiler. Doğum bilgisi buradan biyografi
+        bölümünün kendisine taşındı; ikinci satır böylece sergilere açılan
+        bağlantıya dönüştü (duyuru şeridi kapatılınca sergilere ulaşacak tek
+        kalıcı yol bu).
+      */}
       <div className="pointer-events-auto absolute bottom-[26px] left-[30px] hidden flex-col gap-[7px] md:flex">
-        <div>BİYOGRAFİ</div>
-        {dogumYeri ? <div className={SOLUK}>{dogumYeri}</div> : null}
+        <a href="#biyografi" className={CAPA}>
+          BİYOGRAFİ
+        </a>
+        <a href="#sergiler" className={`${CAPA} ${SOLUK} hover:opacity-100`}>
+          SERGİLER
+        </a>
       </div>
 
       {/* Sağ alt — iletişim */}
       <div className="pointer-events-auto absolute bottom-[26px] right-[30px] hidden flex-col items-end gap-[7px] text-right md:flex">
-        <div>İLETİŞİM</div>
+        <a href="#iletisim" className={CAPA}>
+          İLETİŞİM
+        </a>
         {eposta ? (
           <div className={SOLUK}>
             <a href={`mailto:${eposta}`}>{eposta}</a>

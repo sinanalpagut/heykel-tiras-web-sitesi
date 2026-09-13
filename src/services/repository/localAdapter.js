@@ -15,7 +15,7 @@ import {
 import * as blob from '../storage/blobStore.js'
 
 const ANAHTAR = 'kese-benav/durum'
-const SEMA_SURUMU = 4
+const SEMA_SURUMU = 5
 
 const gecikme = Number(import.meta.env?.VITE_SAHTE_GECIKME ?? (import.meta.env?.DEV ? 180 : 0))
 const bekle = () => (gecikme > 0 ? new Promise((r) => setTimeout(r, gecikme)) : Promise.resolve())
@@ -121,6 +121,26 @@ function gocur(d, surum) {
         if (!t || !k.gorsel?.taslakMi) return k
         return { ...k, gorsel: { ...t.gorsel } }
       }),
+    }
+  }
+
+  if (surum < 5) {
+    /*
+     * v5: kimliğe biyografi metni eklendi. Tuzak #4'ün aynısı: yalnızca eksik
+     * alanı boş bırakmak, biyografi bölümünü mevcut ziyaretçilerde sessizce
+     * boş gösterirdi. Kullanıcı kimliği ELLE düzenlemiş olsa bile biyografi
+     * alanı v5 öncesinde HİÇ yoktu — yani buraya tohum metnini yazmak hiçbir
+     * kullanıcı verisinin üstüne yazmaz.
+     */
+    const biyo = VARSAYILAN_AYARLAR.kimlik?.biyografi || ''
+    const kimlikTamamla = (ayar) => {
+      if (!ayar?.kimlik || typeof ayar.kimlik.biyografi === 'string') return ayar
+      return { ...ayar, kimlik: { ...ayar.kimlik, biyografi: biyo } }
+    }
+    cikti = {
+      ...cikti,
+      ayarlar: kimlikTamamla(cikti.ayarlar),
+      yayinlar: (cikti.yayinlar || []).map((y) => ({ ...y, ayarlar: kimlikTamamla(y.ayarlar) })),
     }
   }
 

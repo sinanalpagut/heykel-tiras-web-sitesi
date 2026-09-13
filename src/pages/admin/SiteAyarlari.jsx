@@ -957,6 +957,18 @@ export default function SiteAyarlari() {
                         onChange={(e) => guncelle('kimlik', { koordinat: e.target.value })}
                       />
                     </Alan>
+                    <Alan
+                      etiket="BİYOGRAFİ"
+                      ipucu="SİTEDEKİ BİYOGRAFİ BÖLÜMÜNDE GÖRÜNÜR — PARAGRAFLAR BOŞ SATIRLA AYRILIR"
+                    >
+                      <MetinAlani
+                        value={ayarlar.kimlik.biyografi ?? ''}
+                        aria-label="Sanatçı biyografisi"
+                        className="h-[170px]"
+                        sinir={1200}
+                        onChange={(e) => guncelle('kimlik', { biyografi: e.target.value })}
+                      />
+                    </Alan>
                     <Alan etiket="E-POSTA">
                       <Girdi
                         type="email"
