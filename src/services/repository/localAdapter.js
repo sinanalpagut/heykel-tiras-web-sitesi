@@ -625,6 +625,9 @@ async function iceAktar(paket) {
 
 export const yerelDepo = {
   ad: 'yerel',
+  // Yerel kurulumda yetki diye ayrı bir kavram yok: parola kapısını geçen
+  // her şeyi yazabilir. Sözleşmenin diğer ucuyla aynı soruyu yanıtlıyoruz.
+  yoneticiMi: async () => true,
   eserleriGetir,
   eserGetir,
   eserOlustur,

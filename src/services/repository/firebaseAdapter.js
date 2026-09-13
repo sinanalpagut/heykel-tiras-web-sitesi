@@ -1114,6 +1114,12 @@ export async function firebaseDepoOlustur() {
 
   return {
     ad: 'firebase',
+    /* Panelin "girdim ama hiçbir şey yazamıyorum" durumunu ÖNCEDEN sorabilmesi
+       için: Firebase Auth oturumu açmak yetki vermez, yetki /yoneticiler/{uid}
+       belgesinin varlığına bağlıdır (bkz. firestore.rules). Belge yoksa panel
+       açılır, listeler sessizce yalnızca yayındakileri gösterir ve her yazma
+       reddedilir — sebebi hiçbir yerde yazmazdı. */
+    yoneticiMi: yoneticiKontrol,
     eserleriGetir,
     eserGetir,
     eserOlustur,

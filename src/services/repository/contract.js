@@ -42,6 +42,7 @@
  * @property {() => Promise<object>} disaAktar         Tam yedek paketi
  * @property {(paket: object) => Promise<object>} iceAktar Yedeği geri yükler
  * @property {() => Promise<void>} sifirla             Tohum verisine döner (Firebase'de desteklenmez)
+ * @property {() => Promise<boolean>} yoneticiMi        Oturum sahibinin YAZMA yetkisi var mı
  * @property {(dinleyici: () => void) => () => void} abone  Değişiklikte tetiklenir; aboneliği iptal eden fonksiyon döner
  */
 
