@@ -3,13 +3,13 @@ rules_version = '2';
 /**
  * Kese Benav — Cloud Storage güvenlik kuralları.
  *
- * Storage'da yalnızca eser fotoğrafları durur ve hepsi yayınlanmak üzere
- * yüklenir; bu yüzden okuma herkese açıktır. Yazma yetkisi Firestore'daki
+ * Storage'da eser fotoğrafları ve sergi afişleri durur; hepsi yayınlanmak üzere
+ * yüklenir, bu yüzden okuma herkese açıktır. Yazma yetkisi Firestore'daki
  * /yoneticiler/{uid} belgesine bağlıdır — Firestore kurallarıyla TEK ölçüt.
  *
- * Yol düzeni: eserler/{eserId}/{gorselId}
- * (firebaseAdapter.gorselYukle bu yolu kurar; gorselId çakışmaz, bu yüzden
- *  dosyalar sonsuz önbelleklenebilir olarak yüklenir.)
+ * Yol düzeni: eserler/{eserId}/{gorselId}  ve  sergiler/{sergiId}/{afisId}
+ * (firebaseAdapter.gorselYukle ve afisYukle bu yolları kurar; kimlikler
+ *  çakışmaz, bu yüzden dosyalar sonsuz önbelleklenebilir olarak yüklenir.)
  */
 service firebase.storage {
   match /b/{bucket}/o {
@@ -35,6 +35,20 @@ service firebase.storage {
         && request.resource.contentType.matches('image/.*');
 
       // Silmede request.resource yoktur; boyut/tür koşulu burada anlamsız olurdu.
+      allow delete: if yoneticiMi();
+    }
+
+    // Sergi afişi. Eser görsellerinden AYRI bir yol, çünkü sergi tek afiş taşır
+    // (galeri koleksiyonu değil) ve 3:4 oranına zorlanmaz. Bu blok olmadan afiş
+    // yükleme aşağıdaki kapanış kuralına düşer ve sessizce reddedilirdi.
+    match /sergiler/{sergiId}/{afisId} {
+      // Duyuru şeridi ve sergiler bölümü oturumsuz okur.
+      allow read: if true;
+
+      allow create, update: if yoneticiMi()
+        && request.resource.size <= 40 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+
       allow delete: if yoneticiMi();
     }
 

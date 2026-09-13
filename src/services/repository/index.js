@@ -25,6 +25,16 @@ export function depoyuHazirla() {
         const mod = await import('./firebaseAdapter.js')
         const depo = await mod.firebaseDepoOlustur()
         if (depo) return depo
+        /* Buraya düşmek SESSİZ kalmamalı. firebaseDepoOlustur yalnızca
+           yapılandırma eksikse null döner; o durumda site localStorage'daki tohum
+           veriyi sunar ve normal görünür, AMA AuthContext hâlâ firebase dalında
+           olduğu için yönetici panele hiç giremez ve girebilseydi bile yazdığı
+           her şey Firestore yerine tarayıcıya gitmiş olurdu. */
+        console.error(
+          '[depo] VITE_DATA_ADAPTER=firebase verildi ama Firebase yapılandırması eksik. ' +
+            'YEREL depoya düşülüyor: veri bu tarayıcıda kalır, panel girişi çalışmaz. ' +
+            'Hangi ortam değişkeninin boş olduğu için yukarıdaki [firebase] satırına bakın.',
+        )
       } catch (h) {
         console.error('[depo] Firebase adaptörü yüklenemedi, yerel adaptöre düşülüyor.', h)
       }

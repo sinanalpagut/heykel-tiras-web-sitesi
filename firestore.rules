@@ -51,9 +51,16 @@ service cloud.firestore {
       // yani tek alanlık bir yama bile belgeyi geçersiz hale getiremez.
       function eserGecerli(veri) {
         return metinDolu(veri, 'baslik')
-          && veri.yil is number
           && veri.malzemeSinifi in ['metal', 'tas']
-          && veri.durum in ['yayinda', 'taslak', 'arsiv'];
+          && veri.durum in ['yayinda', 'taslak', 'arsiv']
+          // Yıl yalnızca YAYINDAKİ eser için zorunlu. Panel yarım kalmış taslakta
+          // yıl kutusunun boşaltılmasına izin veriyor (EserDuzenle'deki sayiya()
+          // boş girdide null gönderir) ve schema.yayinEngelleri de yılı yalnızca
+          // yayınlamak için şart koşuyor. Kural bundan katı olursa taslak hiç
+          // kaydedilemez — üstelik istemci hatayı "yönetici oturumu gerekiyor"
+          // diye yanlış teşhis eder, çünkü Firestore her ret için permission-denied
+          // döndürür ve sebebi söylemez.
+          && (veri.yil is number || (veri.durum != 'yayinda' && veri.yil == null));
       }
 
       // get: yayındaki eser herkese açık, diğerleri yöneticiye.
@@ -74,10 +81,17 @@ service cloud.firestore {
     match /surecKareleri/{kareId} {
       // Taslak kavramı yok: bu kareler yayınlanmak üzere vardır.
       allow read: if true;
-      allow write: if yoneticiMi()
+
+      // create/update ile delete AYRI yazılmak ZORUNDA. Silmede request.resource
+      // yoktur; tek bir "write" kuralı alan doğrulaması yaparsa silme her koşulda
+      // reddedilir. Bu sessiz kalmaz: yedek geri yükleme (iceAktar) yedekte
+      // olmayan kareler için silme üretir ve yığın ATOMİK olduğu için tek bir
+      // reddedilen silme geri yüklemenin tamamını düşürür.
+      allow create, update: if yoneticiMi()
         && metinDolu(request.resource.data, 'kod')
         && metinDolu(request.resource.data, 'baslik')
         && request.resource.data.sira is number;
+      allow delete: if yoneticiMi();
     }
 
     /* ---------- sergiler ---------- */

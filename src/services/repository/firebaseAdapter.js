@@ -20,12 +20,9 @@
  *   doğrudan `gorsel.url` alanına yazılır ve `gorselUrl(id)` bu alanı okur.
  *   Yani orada URL çalışma zamanında üretiliyordu, burada veriden okunuyor.
  */
-import { DepoHatasi, kimlikUret, sirayiYenidenNumarala } from './contract.js'
+import { DepoHatasi, kimlikUret, SEMA_SURUMU, sirayiYenidenNumarala } from './contract.js'
 import { VARSAYILAN_AYARLAR } from '../../data/seed.js'
 import { authAl, firestoreAl, storageAl } from '../firebase.js'
-
-/** localAdapter ile aynı olmalı — yedek dosyaları iki adaptör arasında taşınabilsin. */
-const SEMA_SURUMU = 1
 
 /** writeBatch üst sınırı 500'dür; güvenli payla parçalıyoruz. */
 const YIGIN_BOYU = 400
@@ -162,8 +159,14 @@ async function yoneticiKontrol() {
     const anlik = await getDoc(doc(veritabani, 'yoneticiler', uid))
     yoneticiOnbellegi = { uid, sonuc: anlik.exists() }
   } catch {
-    // Okunamıyorsa yönetici değiliz varsayılır; ziyaretçi sorgusu yine çalışır.
-    yoneticiOnbellegi = { uid, sonuc: false }
+    /* Okuma düştüyse (geçici ağ kesintisi, App Check, kural hatası) "yönetici
+       değil" sonucunu ÖNBELLEĞE ALMA. Alsaydı yönetici oturumun geri kalanında
+       ziyaretçi gibi davranırdı: panelde taslak eserler sessizce listeden ve
+       sayaçtan düşer, taslak bir eserin adresi "silinmiş olabilir" derdi —
+       sayfa yenilemek bile düzeltmezdi, çünkü uid aynı. Önbelleği boş bırakıp
+       false dönüyoruz; bir sonraki çağrı yeniden dener. */
+    yoneticiOnbellegi = { uid: null, sonuc: false }
+    return false
   }
   return yoneticiOnbellegi.sonuc
 }
@@ -189,6 +192,15 @@ const dinleyiciler = new Set()
 let kapatmalar = []
 let kurulumSozu = null
 let duyuruZamanlayici = null
+
+/* Kurulum nesli. Son abone ayrılıp hemen yenisi geldiğinde (StrictMode'un çift
+   bağlaması, ya da /admin içinde rota değişimi) eski kurulum HÂLÂ uçuşta olabilir:
+   `kurulumSozu` null'lanır, `dinlemeyiBirak()` henüz boş olan diziyi temizler ve
+   ikinci bir kurulum başlar. İkisi de tamamlanınca her koleksiyon iki kez dinlenir
+   ve bu fazlalık oturum boyunca kapanmaz — uzaktan gelen her değişiklikte belge
+   okumaları ikiye katlanır. Nesil numarası bunu keser: kurulum bittiğinde nesli
+   değişmişse kendi açtıklarını derhal kapatır. */
+let kurulumNesli = 0
 
 /** Duyuru penceresi (ms) — aşağıdaki nedenle vardır, bkz. `duyur`. */
 const DUYURU_PENCERESI = 60
@@ -232,14 +244,18 @@ function dinlemeyiBirak() {
 
 async function dinlemeyiKur() {
   if (kurulumSozu) return kurulumSozu
+  const nesil = ++kurulumNesli
   kurulumSozu = (async () => {
     const [fs, veritabani] = await Promise.all([fsAl(), dbAl()])
     const { collection, doc, limit, onSnapshot, orderBy, query, where } = fs
     const yonetici = await yoneticiKontrol()
 
+    // Kapatmalar önce YERELE toplanır; ancak kurulum güncel kalırsa paylaşılan
+    // `kapatmalar` dizisine geçer (bkz. kurulumNesli).
+    const yerelKapatmalar = []
     const izle = (hedef, isle) => {
       let ilk = true
-      kapatmalar.push(
+      yerelKapatmalar.push(
         onSnapshot(
           hedef,
           (anlik) => {
@@ -262,13 +278,31 @@ async function dinlemeyiKur() {
         : query(collection(veritabani, 'eserler'), where('durum', '==', 'yayinda'), orderBy('sira')),
       (anlik) => anlik.docs.forEach((d) => urlleriBellegeAl(belge(d))),
     )
-    izle(collection(veritabani, 'sergiler'))
+    izle(collection(veritabani, 'sergiler'), (anlik) =>
+      anlik.docs.forEach((d) => gorseliBellegeAl(belge(d).afis)),
+    )
+    // Atölye şeridi de canlı dinlenir: hem karenin fotoğrafı panelden değişince
+    // site tazelensin, hem de afiş/kare URL'leri önbelleğe girsin.
+    izle(collection(veritabani, 'surecKareleri'), (anlik) =>
+      anlik.docs.forEach((d) => gorseliBellegeAl(belge(d).gorsel)),
+    )
     // Taslak ayarlar yalnızca yöneticiye açık; ziyaretçi yerine yayınları dinler.
     if (yonetici) izle(doc(veritabani, ...AYAR_BELGESI))
     izle(query(collection(veritabani, 'yayinlar'), orderBy('surum', 'desc'), limit(1)))
 
-    // Kurulum sırasında son abone de ayrılmış olabilir.
-    if (dinleyiciler.size === 0) dinlemeyiBirak()
+    // Kurulum sırasında son abone ayrılmış ya da yeni bir kurulum başlamış
+    // olabilir; her iki durumda da BU kurulumun açtıkları fazlalıktır.
+    if (nesil !== kurulumNesli || dinleyiciler.size === 0) {
+      for (const kapat of yerelKapatmalar) {
+        try {
+          kapat()
+        } catch {
+          /* zaten kapanmış olabilir */
+        }
+      }
+      return
+    }
+    kapatmalar.push(...yerelKapatmalar)
   })()
   kurulumSozu.catch((hata) => {
     console.error('[depo] Dinleyiciler kurulamadı.', hata)
@@ -512,29 +546,44 @@ async function cemberSirasiYayinla(sirali) {
  */
 const gorselUrlleri = new Map()
 
-function urlleriBellegeAl(eser) {
-  for (const g of eser?.gorseller ?? []) {
-    if (g?.id && g.url) gorselUrlleri.set(g.id, g.url)
-  }
+/** Tek bir Gorsel kaydını önbelleğe alır. */
+function gorseliBellegeAl(gorsel) {
+  if (gorsel?.id && gorsel.url) gorselUrlleri.set(gorsel.id, gorsel.url)
 }
 
+function urlleriBellegeAl(eser) {
+  for (const g of eser?.gorseller ?? []) gorseliBellegeAl(g)
+}
+
+/**
+ * Bir görsel ÜÇ ayrı yerde durabilir: eserin `gorseller` dizisinde, süreç
+ * karesinin `gorsel` alanında, serginin `afis` alanında (bkz. data/schema.js).
+ * Burada yalnızca eserler taranıyordu; sonucu şuydu: atölye şeridinin beş
+ * karesi ve sergi afişleri sitede kalıcı yer tutucu olarak çiziliyor, üstelik
+ * her çözülemeyen kimlik boşuna bir TAM eserler sorgusu tetikliyordu. Veri
+ * Firestore'da eksiksiz dururken sayfa sessizce boş görünüyordu — hata da yok.
+ */
 async function gorselUrl(gorselId) {
   if (!gorselId) return null
   if (gorselUrlleri.has(gorselId)) return gorselUrlleri.get(gorselId)
-  try {
-    await eserleriGetir() // eser okuması önbelleği doldurur
-  } catch {
-    return null
+  // Sırayla en olası kaynaktan başlanır; her okuma kendi önbelleğini doldurur.
+  for (const oku of [eserleriGetir, surecKareleriniGetir, sergileriGetir]) {
+    try {
+      await oku()
+    } catch {
+      continue // bir koleksiyon okunamazsa diğerleri yine denenir
+    }
+    if (gorselUrlleri.has(gorselId)) return gorselUrlleri.get(gorselId)
   }
-  return gorselUrlleri.get(gorselId) ?? null
+  return null
 }
 
-/** Storage nesnesini siler; yoksa sorun etmez (üstveri zaten kaldırıldı). */
-async function nesneyiSil(eserId, gorselId) {
+/** Storage nesnesini yoldan siler; yoksa sorun etmez (üstveri zaten kaldırıldı). */
+async function yoluSil(yol, gorselId) {
   try {
     const [{ deleteObject, ref }, storage] = await Promise.all([stMod(), storageAl()])
     if (!storage) return
-    await deleteObject(ref(storage, `eserler/${eserId}/${gorselId}`))
+    await deleteObject(ref(storage, yol))
   } catch (hata) {
     if (hata?.code !== 'storage/object-not-found') {
       console.warn('[depo] Görsel dosyası silinemedi; üstveri kaldırıldı.', hata)
@@ -543,6 +592,12 @@ async function nesneyiSil(eserId, gorselId) {
     gorselUrlleri.delete(gorselId)
   }
 }
+
+/* İki ayrı Storage yolu var (bkz. storage.rules): eser görselleri ve sergi
+   afişleri. Yol kurmayı tek yerde tutmak önemli — kural dosyası tam bu iki
+   kalıbı açıyor, üçüncü bir kalıp sessizce reddedilirdi. */
+const nesneyiSil = (eserId, gorselId) => yoluSil(`eserler/${eserId}/${gorselId}`, gorselId)
+const afisNesnesiniSil = (sergiId, afisId) => yoluSil(`sergiler/${sergiId}/${afisId}`, afisId)
 
 async function gorselYukle(eserId, dosya, ustveri = {}) {
   if (!(dosya instanceof Blob)) throw new DepoHatasi('Geçersiz dosya.', { kod: 'girdi' })
@@ -656,7 +711,9 @@ async function surecKareleriniGetir() {
   return sar('Süreç kareleri okunamadı.', 'okuma', async () => {
     const [{ collection, getDocs }, veritabani] = await Promise.all([fsAl(), dbAl()])
     const anlik = await getDocs(collection(veritabani, 'surecKareleri'))
-    return anlik.docs.map(belge).sort((a, b) => (a.sira ?? 0) - (b.sira ?? 0))
+    const kareler = anlik.docs.map(belge)
+    for (const kare of kareler) gorseliBellegeAl(kare.gorsel)
+    return kareler.sort((a, b) => (a.sira ?? 0) - (b.sira ?? 0))
   })
 }
 
@@ -678,9 +735,9 @@ async function sergileriGetir() {
   return sar('Sergiler okunamadı.', 'okuma', async () => {
     const [{ collection, getDocs }, veritabani] = await Promise.all([fsAl(), dbAl()])
     const anlik = await getDocs(collection(veritabani, 'sergiler'))
-    return anlik.docs
-      .map(belge)
-      .sort((a, b) => b.yil - a.yil || String(a.ad).localeCompare(String(b.ad), 'tr'))
+    const sergiler = anlik.docs.map(belge)
+    for (const sergi of sergiler) gorseliBellegeAl(sergi.afis)
+    return sergiler.sort((a, b) => b.yil - a.yil || String(a.ad).localeCompare(String(b.ad), 'tr'))
   })
 }
 
@@ -709,8 +766,94 @@ async function sergiGuncelle(id, yama) {
 
 async function sergiSil(id) {
   return sar('Sergi silinemedi.', 'yazma', async () => {
-    const [{ deleteDoc, doc }, veritabani] = await Promise.all([fsAl(), dbAl()])
-    await deleteDoc(doc(veritabani, 'sergiler', id))
+    const [{ deleteDoc, doc, getDoc }, veritabani] = await Promise.all([fsAl(), dbAl()])
+    const referans = doc(veritabani, 'sergiler', id)
+    // Afişin kimliğini belge silinmeden ÖNCE oku; sonra öğrenmenin yolu kalmaz
+    // ve dosya Storage'da öksüz kalırdı.
+    const anlik = await getDoc(referans)
+    const afisId = anlik.exists() ? (belge(anlik).afis?.id ?? null) : null
+    await deleteDoc(referans)
+    if (afisId) await afisNesnesiniSil(id, afisId)
+    duyur()
+  })
+}
+
+/**
+ * Sergi afişi. Eser görsellerinden ayrı tutuluyor çünkü sergi TEK afiş taşır
+ * (galeri koleksiyonu değil) ve çember kartı gibi 3:4'e zorlanmaz.
+ *
+ * Dönüş şekli localAdapter.afisYukle ile aynı olmak ZORUNDA: GÜNCELLENMİŞ SERGİ
+ * kaydı döner, görsel kaydı değil — panel (Sergiler.jsx) dönen değeri sergi
+ * olarak kullanıyor.
+ */
+async function afisYukle(sergiId, dosya, ustveri = {}) {
+  if (!(dosya instanceof Blob)) throw new DepoHatasi('Geçersiz dosya.', { kod: 'girdi' })
+  return sar('Afiş yüklenemedi.', 'yazma', async () => {
+    const [{ doc, getDoc, updateDoc }, veritabani] = await Promise.all([fsAl(), dbAl()])
+    const referans = doc(veritabani, 'sergiler', sergiId)
+    const anlik = await getDoc(referans)
+    // Önce sergiyi doğrula: yoksa Storage'a öksüz dosya bırakmayalım.
+    if (!anlik.exists()) throw new DepoHatasi('Sergi bulunamadı.', { kod: 'yok' })
+
+    const storage = await storageAl()
+    if (!storage) throw new DepoHatasi('Firebase Storage yapılandırılmamış.', { kod: 'yapilandirma' })
+    const { getDownloadURL, ref, uploadBytes } = await stMod()
+
+    const afisId = kimlikUret('afis')
+    const nesne = ref(storage, `sergiler/${sergiId}/${afisId}`)
+    await uploadBytes(nesne, dosya, {
+      contentType: dosya.type || 'image/webp',
+      cacheControl: 'public, max-age=31536000, immutable',
+    })
+
+    let url
+    try {
+      url = await getDownloadURL(nesne)
+    } catch (hata) {
+      await afisNesnesiniSil(sergiId, afisId)
+      throw hata
+    }
+
+    const kayit = {
+      id: afisId,
+      url, // yerelde null'dı; burada kalıcı indirme adresi
+      alt: ustveri.alt || '',
+      genislik: ustveri.genislik || 0,
+      yukseklik: ustveri.yukseklik || 0,
+      kaynakAdi: ustveri.kaynakAdi || '',
+      kaynakBayt: dosya.size,
+      kirpma: ustveri.kirpma || null,
+      oran: ustveri.oran || 'serbest',
+    }
+
+    const sergi = belge(anlik)
+    const eskiId = sergi.afis?.id ?? null
+    try {
+      await updateDoc(referans, { afis: temizle(kayit) })
+    } catch (hata) {
+      await afisNesnesiniSil(sergiId, afisId) // üstveri yazılamadıysa dosya da kalmasın
+      throw hata
+    }
+
+    // Bir sergi tek afiş taşır; yenisi gelince eskisinin dosyası boşa yer kaplamasın.
+    if (eskiId && eskiId !== afisId) await afisNesnesiniSil(sergiId, eskiId)
+
+    gorseliBellegeAl(kayit)
+    duyur()
+    return { ...sergi, afis: kayit }
+  })
+}
+
+async function afisSil(sergiId) {
+  return sar('Afiş silinemedi.', 'yazma', async () => {
+    const [{ doc, getDoc, updateDoc }, veritabani] = await Promise.all([fsAl(), dbAl()])
+    const referans = doc(veritabani, 'sergiler', sergiId)
+    const anlik = await getDoc(referans)
+    if (!anlik.exists()) throw new DepoHatasi('Sergi bulunamadı.', { kod: 'yok' })
+
+    const eskiId = belge(anlik).afis?.id ?? null
+    await updateDoc(referans, { afis: null })
+    if (eskiId) await afisNesnesiniSil(sergiId, eskiId)
     duyur()
   })
 }
@@ -910,8 +1053,20 @@ async function iceAktar(paket) {
     await yenile('eserler', d.eserler)
     await yenile('surecKareleri', d.surecKareleri)
     await yenile('sergiler', d.sergiler)
-    for (const yayin of d.yayinlar ?? []) {
-      islemler.push((y) => y.set(doc(veritabani, 'yayinlar', yayin.id), temizle(yayin)))
+    /* Yayın geçmişi değiştirilemez (firestore.rules: yayinlar update -> false).
+       Var olan bir yayını yeniden `set` etmek UPDATE sayılır ve reddedilir;
+       yığın ATOMİK olduğu için tek bir çakışma geri yüklemenin tamamını düşürür
+       — eserler ve sergiler de yazılmaz, üstelik hata "yönetici oturumu
+       gerekiyor" diye yanlış teşhis konur. Bu yüzden yalnızca EKSİK yayınlar
+       eklenir; aynı yedeği ikinci kez yüklemek artık sorunsuz çalışır. */
+    {
+      const { collection, getDocs } = await fsAl()
+      const mevcutYayinlar = await getDocs(collection(veritabani, 'yayinlar'))
+      const varOlan = new Set(mevcutYayinlar.docs.map((a) => a.id))
+      for (const yayin of d.yayinlar ?? []) {
+        if (varOlan.has(yayin.id)) continue
+        islemler.push((y) => y.set(doc(veritabani, 'yayinlar', yayin.id), temizle(yayin)))
+      }
     }
 
     await yiginYaz(islemler)
@@ -977,6 +1132,8 @@ export async function firebaseDepoOlustur() {
     sergiOlustur,
     sergiGuncelle,
     sergiSil,
+    afisYukle,
+    afisSil,
     ayarlariGetir,
     ayarlariKaydet,
     ayarlariYayinla,

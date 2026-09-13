@@ -365,7 +365,15 @@ export default function SiteAyarlari() {
     () => () => {
       if (!zamanlayici.current) return
       clearTimeout(zamanlayici.current)
-      if (sonRef.current) depo.ayarlariKaydet(sonRef.current).catch(() => {})
+      /* Bileşen sökülüyor: hatayı ekranda gösterecek yer kalmadı. Ama yutmak da
+         olmaz — kullanıcı ayarları kaydettiğini sanıp geri döndüğünde eski değeri
+         görür ve neyin kaybolduğunu açıklayan hiçbir iz bulunmaz. En azından
+         sebebi konsola bırakıyoruz. */
+      if (sonRef.current) {
+        depo.ayarlariKaydet(sonRef.current).catch((h) => {
+          console.error('[A6] Ekrandan çıkarken bekleyen taslak kaydı YAZILAMADI.', h)
+        })
+      }
     },
     [depo],
   )

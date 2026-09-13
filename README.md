@@ -10,7 +10,10 @@ npm run build    # dist/
 npm run preview
 ```
 
-Yönetim paneli: `/admin` — varsayılan parola `benav` (`.env` içinde `VITE_ADMIN_PAROLA` ile değiştirin).
+Yönetim paneli: `/admin`. **Yerel kurulumda** varsayılan parola `benav` (`.env` içinde
+`VITE_ADMIN_PAROLA` ile değiştirin). Bu istemci tarafı bir kapıdır, gerçek koruma değildir —
+üstelik bu depo herkese açık olduğu için parola da açıktır. `VITE_DATA_ADAPTER=firebase`
+iken bu dal tamamen devre dışı kalır ve giriş Firebase Auth e-posta/parola ile yapılır.
 
 ---
 
@@ -45,15 +48,36 @@ Gerçek koruma ve paylaşılan veri için aşağıdaki Firebase yolunu açın.
 Arayüz kodunun tek satırı değişmeden çalışır — tüm ekranlar `services/repository/contract.js`
 sözleşmesine karşı yazılmıştır.
 
-1. Firebase Console'da proje açın; Firestore, Storage ve Authentication (e-posta/parola) etkinleştirin.
+1. Firebase Console'da proje açın; Firestore, Storage ve Authentication (e-posta/parola)
+   etkinleştirin. **Cloud Storage yeni projelerde Blaze (kullandıkça öde) planı ister** —
+   eser fotoğrafları ve sergi afişleri oraya gider.
 2. `.env.example` dosyasını `.env` olarak kopyalayın, web uygulaması yapılandırmasını doldurun.
 3. `VITE_DATA_ADAPTER=firebase` yapın.
-4. Kuralları yayınlayın:
+4. Kuralları **ve indeksleri** yayınlayın:
    ```bash
-   firebase deploy --only firestore:rules,storage:rules
+   firebase deploy --only firestore:rules,firestore:indexes,storage:rules
    ```
+   `firestore:indexes` atlanamaz. Ziyaretçi sorgusu `where('durum','==','yayinda')` +
+   `orderBy('sira')` bileşik indeksini kullanır; indeks yoksa sorgu `failed-precondition`
+   ile düşer ve ana sayfanın tamamı hata kutusuna dönüşür. Bu arıza kolayca gözden kaçar,
+   çünkü **yönetici onu göremez** — yöneticinin sorgusu süzgeçsizdir ve indekse ihtiyaç
+   duymaz. Yalnızca oturumsuz ziyaretçi (ya da gizli sekme) görür.
 5. Yönetici kullanıcının UID'si ile `yoneticiler/{uid}` belgesi oluşturun — kurallar yazma
-   yetkisini bu belgeye bağlar.
+   yetkisini bu belgeye bağlar. Belge olmadan giriş yapılır ama her yazma reddedilir.
+6. Storage paketine CORS tanımı verin. Yoksa yalnızca **var olan bir görseli yeniden kırpma**
+   akışı ağ hatası verir (`GorselKirpmaModali` mevcut görseli `fetch` ile indirir; sayfadaki
+   `<img src>` etkilenmez). Bir kez:
+   ```bash
+   echo '[{"origin":["https://ALAN-ADINIZ"],"method":["GET"],"maxAgeSeconds":3600}]' > cors.json
+   gsutil cors set cors.json gs://PAKET-ADINIZ
+   ```
+7. **Mevcut arşivi taşıyın.** Firestore boş açılır; tohumlama otomatik değildir. Yerel
+   kurulumda A6 → **YEDEK** → yedeği indirin, sonra Firebase kurulumunda aynı ekrandan geri
+   yükleyin. Şema sürümü artık iki adaptörde ortaktır (`contract.js` → `SEMA_SURUMU`), bu
+   yüzden dosya iki yönde de kabul edilir.
+   Yerel yedekteki görsel kayıtlarının `url` alanı **boştur** — ikili veri o tarayıcının
+   IndexedDB'sindeydi ve JSON'a girmez. Metin verisi eksiksiz gelir; fotoğraflar panelden
+   yeniden yüklenir.
 
 Yerel emülatörle çalışmak için `.env` içinde `VITE_FIREBASE_EMULATOR=true` verip:
 

@@ -4,7 +4,7 @@
  * Üstveri localStorage'da JSON olarak, görsellerin ikili verisi IndexedDB'de
  * (bkz. storage/blobStore.js) durur. Sözleşme services/repository/contract.js.
  */
-import { DepoHatasi, kimlikUret, sirayiYenidenNumarala } from './contract.js'
+import { DepoHatasi, kimlikUret, SEMA_SURUMU, sirayiYenidenNumarala } from './contract.js'
 import {
   tohumDurum,
   ESERLER as TOHUM_ESERLER,
@@ -15,7 +15,6 @@ import {
 import * as blob from '../storage/blobStore.js'
 
 const ANAHTAR = 'kese-benav/durum'
-const SEMA_SURUMU = 5
 
 const gecikme = Number(import.meta.env?.VITE_SAHTE_GECIKME ?? (import.meta.env?.DEV ? 180 : 0))
 const bekle = () => (gecikme > 0 ? new Promise((r) => setTimeout(r, gecikme)) : Promise.resolve())

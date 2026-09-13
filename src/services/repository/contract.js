@@ -35,8 +35,25 @@
  * @property {() => Promise<object[]>} yayinlariGetir
  * @property {(yayinId: string) => Promise<object>} yayinaDon
  * @property {() => Promise<object>} yayindakiAyarlariGetir Sitenin gördüğü ayarlar
+ * @property {() => Promise<string[]>} yayindakiCemberSirasi Sitenin gördüğü çember sırası
+ * @property {(gorselId: string) => Promise<string|null>} gorselUrl Gösterilebilir adres (yerelde object URL, Firebase'de indirme adresi)
+ * @property {() => boolean} gorselKalici              İkili veri kalıcı mı (yerelde tarayıcı verisine bağlı)
+ * @property {(eserId: string, gorselId: string, yama: object) => Promise<object>} gorselUstveriGuncelle
+ * @property {() => Promise<object>} disaAktar         Tam yedek paketi
+ * @property {(paket: object) => Promise<object>} iceAktar Yedeği geri yükler
+ * @property {() => Promise<void>} sifirla             Tohum verisine döner (Firebase'de desteklenmez)
  * @property {(dinleyici: () => void) => () => void} abone  Değişiklikte tetiklenir; aboneliği iptal eden fonksiyon döner
  */
+
+/**
+ * Yedek dosyalarının şema sürümü.
+ *
+ * BURADA durmasının sebebi: iki adaptörde ayrı ayrı tanımlıyken sessizce
+ * ayrıştılar (yerel 5, Firebase 1) ve yedek dosyaları adaptörler arasında hiç
+ * taşınamaz hale geldi — üstelik bu, yereldeki arşivi Firebase'e aktarmanın
+ * ürün içindeki TEK yoluydu. Tek kaynak olunca bir daha ayrışamazlar.
+ */
+export const SEMA_SURUMU = 5
 
 export class DepoHatasi extends Error {
   /**
