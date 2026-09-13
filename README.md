@@ -152,6 +152,21 @@ Pozisyon açısı `360 / eserAdedi` ile hesaplanır; eser eklendiğinde çember 
 
 ---
 
+## Yayına çıkarken yapılacaklar
+
+Site şu an **müşteri önizlemesi** olarak yayında ve arama motorlarına kapalı.
+Gerçek yayına geçerken sırayla:
+
+1. **`public/robots.txt` sil** (ya da `Disallow: /` satırını kaldır). Bu dosya
+   durduğu sürece panelden "indekslensin" açılsa bile arama motorları siteye
+   giremez — robots.txt taramayı engeller, sayfadaki meta etiketi okunamaz.
+2. **Panelden A6 → SEO → "indekslensin" anahtarını aç.** Bu, `index.html`'deki
+   statik `noindex` etiketini çalışma zamanında `index, follow` ile ezer.
+3. **`index.html`'deki `og:url` ve `og:image` adreslerini güncelle.** Şu an
+   `heykel-tiras-web-sitesi.web.app` yazıyor; kendi alan adına geçince paylaşım
+   kartı eski adresi gösterir.
+4. Değişiklikleri yayınla: `npx --yes firebase-tools deploy --only hosting`
+
 ## Bilinen ve kasıtlı davranışlar
 
 - **A6 kontrast uyarısı varsayılan vurgu renklerinde tetiklenir.** Beton (#35322D) üzerinde

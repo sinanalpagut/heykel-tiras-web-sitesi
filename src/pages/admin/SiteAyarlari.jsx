@@ -278,6 +278,39 @@ function OnayKipi({ baslik, mesaj, onayMetni = 'ONAYLA', tehlike, onOnay, onIpta
 /* ============================ ana ekran ============================ */
 
 export default function SiteAyarlari() {
+  /*
+   * Panel gerçeği söylesin: "indekslensin" anahtarı yalnızca sayfadaki meta
+   * etiketini değiştirir. robots.txt sitenin tamamını taramaya kapattıysa o
+   * anahtar AÇIK olsa bile arama motoru siteye hiç giremez — meta etiketini
+   * okuyamaz bile. Anahtarı açan biri sitesinin dizinleneceğini sanırdı.
+   *
+   * Dosyayı çalışma zamanında okuyoruz çünkü robots.txt derlemeye değil,
+   * public/ klasörüne ait; kodda sabit bir varsayım yanlış olurdu.
+   */
+  const [robotsEngelliyor, setRobotsEngelliyor] = useState(false)
+  useEffect(() => {
+    let iptal = false
+    fetch('/robots.txt', { cache: 'no-store' })
+      .then((y) => (y.ok ? y.text() : null))
+      .then((metin) => {
+        if (iptal || metin == null) return
+        /* SPA yeniden yazma kuralı dosya yoksa HTML döndürür — o robots.txt değil. */
+        if (/^\s*</.test(metin)) return
+        const engel = metin
+          .split('\n')
+          .map((satir) => satir.trim())
+          .filter((satir) => satir && !satir.startsWith('#'))
+          .some((satir) => /^disallow:\s*\/\s*$/i.test(satir))
+        setRobotsEngelliyor(engel)
+      })
+      .catch(() => {
+        /* Ağ hatasında sessiz kal: yanlış alarm, hiç uyarı vermemekten kötü. */
+      })
+    return () => {
+      iptal = true
+    }
+  }, [])
+
   const depo = useDepo()
   const azaltilmisHareket = useReducedMotion()
 
@@ -923,6 +956,14 @@ export default function SiteAyarlari() {
                       ? 'SİTE DİZİNLENİR — KOLOFONDAKİ "NO INDEX" İBARESİ GÖRÜNMEZ.'
                       : 'KAPALI: SAYFAYA noindex ETİKETİ EKLENİR VE KOLOFONDAKİ "NO INDEX" İBARESİ GERÇEĞİ SÖYLER.'}
                   </p>
+
+                  {robotsEngelliyor && (
+                    <p className="border border-tas/45 bg-tas/[0.07] p-3 text-micro leading-[1.9] tracking-[0.14em] text-tas">
+                      DİKKAT — robots.txt SİTENİN TAMAMINI TARAMAYA KAPATIYOR.
+                      BU ANAHTAR AÇIK OLSA BİLE ARAMA MOTORLARI SİTEYE GİREMEZ.
+                      YAYINA ÇIKARKEN public/robots.txt SİLİNMELİ.
+                    </p>
+                  )}
                 </section>
 
                 <section className="grid content-start gap-[22px] p-7">

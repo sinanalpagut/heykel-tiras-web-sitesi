@@ -6,6 +6,16 @@
     <meta name="theme-color" content="#35322D" />
     <meta name="description" content="Kese Benav — metal ve taş heykel arşivi. Karaköy döküm atölyesi, 2019—." />
     <!--
+      Varsayılan: arama motorlarına KAPALI. Bu etiket statik olduğu için
+      JavaScript çalıştırmayan botlar da görür — çalışma zamanında eklenen
+      etiket onlara hiç ulaşmıyordu.
+
+      Panelden (A6 → SEO → indekslensin) açılınca HomePage'deki effect bu
+      etiketi "index, follow" ile EZER. Sıralama bilinçli: güvenli taraf
+      varsayılan, izin açık bir karar.
+    -->
+    <meta name="robots" content="noindex, nofollow" />
+    <!--
       Sosyal paylaşım kartları. OG botları JavaScript ÇALIŞTIRMAZ; bu etiketler
       bu yüzden statik ve adresler MUTLAK. Alan adı değişirse (kendi domain'e
       geçişte) buradaki üç URL de güncellenmeli.

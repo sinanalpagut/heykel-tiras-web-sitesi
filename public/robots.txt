@@ -1,0 +1,17 @@
+# ────────────────────────────────────────────────────────────────
+#  MÜŞTERİ ÖNİZLEMESİ — tarama tamamen kapalı.
+#
+#  YAYINA ÇIKARKEN BU DOSYA SİLİNMELİ (ya da Disallow satırı boşaltılmalı).
+#  Aksi halde yönetim panelinden "indekslensin" anahtarı açılsa bile arama
+#  motorları siteye HİÇ giremez: robots.txt taramayı engeller, sayfadaki
+#  meta etiketi de okunamaz.
+#
+#  Yayın sürümü şöyle olmalı:
+#     User-agent: *
+#     Allow: /
+#     Disallow: /admin
+#     Sitemap: https://<alan-adi>/sitemap.xml
+# ────────────────────────────────────────────────────────────────
+
+User-agent: *
+Disallow: /
