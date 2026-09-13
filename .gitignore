@@ -25,3 +25,9 @@ dist-ssr
 
 .env
 .env.local
+
+# Firebase CLI'ın dağıtım önbelleği. Yüklenen dosyaların özetlerini tutar:
+# makineye özel, her dağıtımda değişir ve depoda hiçbir değeri yok. 96e610b'de
+# kazara izlemeye girmiş ve o günden beri her dağıtımdan sonra çalışma ağacını
+# kirletiyordu.
+.firebase/
