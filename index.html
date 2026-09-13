@@ -4,6 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#35322D" />
+    <!--
+      Sekme ikonu hiç bağlanmamıştı: tarayıcı /favicon.ico istiyor, SPA yeniden
+      yazma kuralı HTML döndürüyor ve sekme ikonsuz kalıyordu. Üç biçim birden
+      veriliyor — SVG modern tarayıcılar için, .ico eski istemciler ve doğrudan
+      /favicon.ico isteği için, apple-touch-icon iOS ana ekranı için.
+    -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" sizes="any" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="description" content="Kese Benav — metal ve taş heykel arşivi. Karaköy döküm atölyesi, 2019—." />
     <!--
       Varsayılan: arama motorlarına KAPALI. Bu etiket statik olduğu için

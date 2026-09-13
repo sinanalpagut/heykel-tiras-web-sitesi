@@ -1,5 +1,0 @@
-# Tek sayfalık uygulama: her yol index.html'e düşer, yönlendirmeyi React Router yapar.
-# Bu dosya olmadan /admin/eserler gibi bir adres doğrudan açıldığında barındırıcı 404 verir.
-# Netlify ve Cloudflare Pages bu dosyayı okur; Firebase Hosting aynı işi firebase.json'daki
-# rewrites bölümüyle yapar.
-/*  /index.html  200
