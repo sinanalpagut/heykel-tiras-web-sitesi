@@ -60,7 +60,7 @@ export default function SiteNav({ kimlik, eserAdedi = 0, gorunur = true, classNa
       */}
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-[84px] bg-[color-mix(in_srgb,var(--kb-cikolata,#211A15)_72%,transparent)] backdrop-blur-[9px] md:hidden"
+        className="absolute inset-x-0 top-0 h-[116px] bg-[color-mix(in_srgb,var(--kb-cikolata,#211A15)_72%,transparent)] backdrop-blur-[9px] md:hidden"
       />
 
       {/* Sol üst — kimlik; tıklanınca çemberin başına döner */}
@@ -83,6 +83,27 @@ export default function SiteNav({ kimlik, eserAdedi = 0, gorunur = true, classNa
           <span>ESERLER</span>
         </a>
         <div className={SOLUK}>{arsivEtiketi}</div>
+      </div>
+
+      {/*
+        Dar ekran gezinme satırı.
+        Alt köşe blokları <768px'te gizli (dar ekranda üst üste biniyorlardı),
+        dolayısıyla SERGİLER / BİYOGRAFİ / İLETİŞİM telefonda ERİŞİLEMEZ
+        kalıyordu — duyuru şeridi kapatılınca sergilere ulaşacak yol hiç
+        kalmıyordu. Üstteki künye zemininin altına kompakt bir satır olarak
+        eklendi; ESERLER burada tekrarlanmıyor, çünkü hem logo hem sağ üstteki
+        etiket zaten oraya gidiyor.
+      */}
+      <div className="pointer-events-auto absolute left-[30px] top-[76px] flex gap-4 md:hidden">
+        <a href="#sergiler" className={CAPA}>
+          SERGİLER
+        </a>
+        <a href="#biyografi" className={CAPA}>
+          BİYOGRAFİ
+        </a>
+        <a href="#iletisim" className={CAPA}>
+          İLETİŞİM
+        </a>
       </div>
 
       {/*
